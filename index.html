@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEYE Biomedical — From Formula to Finished Skincare</title>
+<meta name="description" content="SEYE Biomedical is a Guangzhou-based OEM / ODM / private-label skincare manufacturer. Custom formulation, medical-grade quality control, global sourcing and export-ready documentation.">
+
+<!-- icons -->
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="assets/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#244A35">
+<!-- 这一行由发布流程写入：测试模式为 noindex，正式上线取消后重新发布 -->
+<!-- ROBOTS:START --><meta name="robots" content="noindex,nofollow"><!-- ROBOTS:END -->
+
+<!-- social sharing. NOTE: og:url / og:image are rewritten to absolute URLs on deploy —
+     crawlers (WhatsApp, LinkedIn, X) do not resolve relative paths here. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SEYE Biomedical">
+<meta property="og:title" content="From Formula to Finished Skincare — SEYE Biomedical">
+<meta property="og:description" content="Guangzhou-based OEM / ODM / private-label skincare manufacturer. Custom formulation, medical-grade quality control and export-ready documentation for brands in 30+ countries.">
+<meta property="og:image" content="assets/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SEYE Biomedical — From Formula to Finished Skincare">
+<meta property="og:url" content="">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="From Formula to Finished Skincare — SEYE Biomedical">
+<meta name="twitter:description" content="OEM / ODM / private-label skincare manufacturing in Guangzhou. Formula development, QC and export documentation under one roof.">
+<meta name="twitter:image" content="assets/og-cover.jpg">
+
+<link rel="preload" as="image" href="assets/hero.jpg">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+/* ============================================================
+   SEYE Biomedical — Homepage
+   Design tokens reverse-engineered from the approved mockup.
+   ============================================================ */
+:root{
+  --cream:      #FDFEF8;
+  --cream-2:    #F5F7F0;
+  --cream-3:    #EDF1E8;
+  --green:      #244A35;
+  --green-deep: #1B3A2A;
+  --green-soft: #2E5A43;
+  --ink:        #16301F;
+  --muted:      #66786C;
+  --muted-warm: #8A8577;
+  --line:       rgba(36,74,53,.15);
+  --line-soft:  rgba(36,74,53,.09);
+  --line-light: rgba(253,254,248,.26);
+
+  --serif: 'Fraunces', 'Noto Serif SC', Georgia, 'Times New Roman', serif;
+  --sans:  'DM Sans', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --maxw: 1280px;
+  --gut:  44px;
+  --r-lg: 24px;
+  --r-md: 16px;
+  --ease: cubic-bezier(.22,.61,.36,1);
+  --hdr:  74px;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+img{ display:block; max-width:100%; }
+a{ color:inherit; text-decoration:none; }
+button,input,select,textarea{ font:inherit; color:inherit; }
+h1,h2,h3,h4{ margin:0; font-family:var(--serif); font-weight:400; font-optical-sizing:auto; }
+
+.wrap{ width:100%; max-width:var(--maxw); margin-inline:auto; padding-inline:var(--gut); }
+
+/* ---------- type scale ---------- */
+h1,.h1{ font-size:clamp(44px,5.6vw,80px); line-height:1.03; letter-spacing:-.022em; }
+h2,.h2{ font-size:clamp(34px,3.9vw,54px); line-height:1.08; letter-spacing:-.018em; }
+h3{ font-size:20px; line-height:1.3; letter-spacing:-.01em; }
+
+.eyebrow{
+  margin:0 0 22px;
+  font-size:11.5px; font-weight:500; line-height:1.4;
+  letter-spacing:.15em; text-transform:uppercase;
+  color:var(--green);
+}
+.eyebrow span{ color:var(--muted-warm); letter-spacing:.1em; }
+.eyebrow.is-light{ color:rgba(253,254,248,.9); }
+.eyebrow.is-light span{ color:rgba(253,254,248,.5); }
+
+.lede{ margin:22px 0 0; max-width:52ch; color:var(--muted); font-size:16.5px; }
+.is-light .lede,.lede.is-light{ color:rgba(253,254,248,.74); }
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:14px 26px; border:1px solid transparent; border-radius:999px;
+  font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase;
+  white-space:nowrap; cursor:pointer; background:none;
+  transition:background .3s var(--ease), color .3s var(--ease),
+             border-color .3s var(--ease), transform .3s var(--ease);
+}
+.btn svg{ flex:none; transition:transform .3s var(--ease); }
+.btn:hover svg{ transform:translateX(4px); }
+.btn-solid{ background:var(--green); color:var(--cream); }
+.btn-solid:hover{ background:var(--green-deep); }
+.btn-outline{ border-color:var(--line); color:var(--green); }
+.btn-outline:hover{ background:var(--green); border-color:var(--green); color:var(--cream); }
+.btn-outline-light{ border-color:var(--line-light); color:var(--cream); }
+.btn-outline-light:hover{ background:var(--cream); border-color:var(--cream); color:var(--green); }
+.btn-white{ background:var(--cream); color:var(--green); justify-content:center; }
+.btn-white:hover{ background:#fff; }
+.btn-sm{ padding:12px 22px; font-size:11px; }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.hdr{
+  position:fixed; inset:0 0 auto; z-index:100; height:var(--hdr);
+  display:flex; align-items:center;
+  color:var(--cream);
+  transition:background .45s var(--ease), color .45s var(--ease), box-shadow .45s var(--ease);
+}
+.hdr.is-stuck{
+  background:rgba(253,254,248,.94);
+  -webkit-backdrop-filter:saturate(160%) blur(14px);
+  backdrop-filter:saturate(160%) blur(14px);
+  color:var(--ink);
+  box-shadow:0 1px 0 var(--line-soft);
+}
+.hdr__in{ display:flex; align-items:center; gap:44px; width:100%; max-width:var(--maxw); margin-inline:auto; padding-inline:var(--gut); }
+.brand{ font-size:23px; font-weight:700; letter-spacing:.16em; }
+.nav{ display:flex; gap:34px; }
+.nav a{
+  position:relative; font-size:13.5px; letter-spacing:.02em; opacity:.88;
+  transition:opacity .25s var(--ease);
+}
+.nav a::after{
+  content:''; position:absolute; left:0; bottom:-6px; height:1px; width:100%;
+  background:currentColor; transform:scaleX(0); transform-origin:left;
+  transition:transform .35s var(--ease);
+}
+.nav a:hover{ opacity:1; }
+.nav a:hover::after{ transform:scaleX(1); }
+.hdr__right{ display:flex; align-items:center; gap:14px; margin-left:auto; }
+.lang{
+  display:inline-flex; align-items:center; gap:7px;
+  padding:8px 14px; border:1px solid currentColor; border-radius:999px;
+  font-size:11.5px; letter-spacing:.12em; opacity:.9; background:none; cursor:pointer;
+  transition:opacity .25s var(--ease);
+}
+.lang:hover{ opacity:1; }
+.socials{ display:flex; gap:9px; }
+.socials a{
+  width:34px; height:34px; display:grid; place-items:center;
+  border:1px solid currentColor; border-radius:50%; opacity:.85;
+  transition:opacity .25s var(--ease), background .25s var(--ease);
+}
+.socials a:hover{ opacity:1; }
+.socials svg{ width:15px; height:15px; }
+.hdr:not(.is-stuck) .socials a:hover{ background:rgba(253,254,248,.16); }
+.hdr.is-stuck .socials a:hover{ background:var(--cream-2); }
+.burger{ display:none; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{ position:relative; min-height:min(94vh,860px); display:flex; align-items:flex-end; overflow:hidden; background:var(--green-deep); }
+.hero__bg{ position:absolute; inset:0; }
+.hero__bg img{ width:100%; height:100%; object-fit:cover; object-position:50% 58%; }
+.hero__scrim{
+  position:absolute; inset:0;
+  background:
+    linear-gradient(96deg, rgba(8,26,18,.90) 0%, rgba(8,26,18,.74) 32%, rgba(8,26,18,.34) 62%, rgba(8,26,18,.16) 100%),
+    linear-gradient(to top, rgba(8,26,18,.72) 0%, rgba(8,26,18,.10) 42%, rgba(8,26,18,0) 70%);
+}
+.hero__in{ position:relative; width:100%; max-width:var(--maxw); margin-inline:auto; padding:calc(var(--hdr) + 60px) var(--gut) 46px; color:var(--cream); }
+.hero h1{ margin:0; max-width:16ch; }
+.hero__lede{ margin:26px 0 0; max-width:46ch; font-size:17px; line-height:1.66; color:rgba(253,254,248,.76); }
+.hero__cta{ display:flex; flex-wrap:wrap; gap:14px; margin-top:38px; }
+.hero .btn-solid{ background:var(--cream); color:var(--green); }
+.hero .btn-solid:hover{ background:#fff; }
+.hero__foot{ display:flex; align-items:center; gap:18px; margin-top:66px; }
+.hero__foot b{ font-family:var(--serif); font-size:13px; letter-spacing:.16em; color:rgba(253,254,248,.85); }
+.hero__foot i{ display:block; width:132px; height:1px; background:rgba(253,254,248,.32); position:relative; overflow:hidden; font-style:normal; }
+.hero__foot i::after{ content:''; position:absolute; inset:0 auto 0 0; width:38%; background:var(--cream); animation:sweep 2.6s var(--ease) infinite; }
+@keyframes sweep{ 0%{transform:translateX(-100%)} 60%,100%{transform:translateX(265%)} }
+.hero__foot em{ font-style:normal; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:rgba(253,254,248,.7); }
+
+/* ============================================================
+   SECTION SHELL
+   ============================================================ */
+.sec{ padding:112px 0; }
+.sec--tight{ padding:96px 0; }
+.sec-head{ display:flex; align-items:flex-start; gap:48px; justify-content:space-between; }
+.sec-head__aside{ flex:none; display:flex; flex-direction:column; align-items:flex-end; gap:14px; padding-top:6px; }
+.sec-note{ margin:0; font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+.rule{ height:1px; background:var(--line); border:0; margin:0; }
+
+/* ============================================================
+   01 · CERTIFICATES
+   ============================================================ */
+.cert{ display:grid; grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr); gap:76px; align-items:center; }
+.marquee{
+  overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 90%,transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 90%,transparent 100%);
+}
+.marquee__track{ display:flex; width:max-content; animation:slide 52s linear infinite; }
+.marquee:hover .marquee__track{ animation-play-state:paused; }
+@keyframes slide{ to{ transform:translateX(-50%); } }
+.cert-item{ flex:none; width:186px; margin-right:18px; }
+.cert-item__img{
+  border:1px solid var(--line-soft); border-radius:10px; overflow:hidden;
+  background:#fff; box-shadow:0 10px 26px -18px rgba(22,48,31,.5);
+  transition:transform .45s var(--ease), box-shadow .45s var(--ease);
+}
+.cert-item__img img{ width:100%; aspect-ratio:640/875; object-fit:cover; object-position:50% 12%; }
+.cert-item:hover .cert-item__img{ transform:translateY(-6px); box-shadow:0 22px 38px -20px rgba(22,48,31,.55); }
+.cert-item h3{ margin:16px 0 3px; font-size:15px; letter-spacing:-.005em; }
+.cert-item p{ margin:0; font-size:12px; line-height:1.45; color:var(--muted); }
+.tags{ display:flex; flex-wrap:wrap; gap:8px; margin:30px 0 0; padding:0; list-style:none; }
+.tags li{
+  padding:7px 14px; border:1px solid var(--line); border-radius:999px;
+  font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--green);
+}
+.sec-head__cta{ margin-top:34px; }
+
+/* ============================================================
+   02 · QUALITY CONTROL
+   ============================================================ */
+.qc-head{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,.62fr); gap:72px; align-items:start; }
+.qc-stats{ display:flex; flex-direction:column; }
+.stat{ padding:22px 0; border-top:1px solid var(--line); }
+.stat:first-child{ border-top:0; padding-top:0; }
+.stat b{ display:block; font-family:var(--serif); font-size:clamp(30px,3vw,40px); line-height:1; letter-spacing:-.02em; color:var(--green); }
+.stat span{ display:block; margin-top:9px; font-size:11.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--muted); }
+.qc-stats .btn{ align-self:flex-start; margin-top:28px; }
+/* The mockup frames this photo at 4:5 (measured 130x162 in the design source).
+   Do NOT stretch it to the height of the 2x2 card block: a wider box makes
+   object-fit:cover zoom into his face and crops the beaker out of frame. */
+.qc-body{ display:grid; grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr); gap:64px; margin-top:78px; align-items:start; }
+.qc-photo{ margin:0; border-radius:var(--r-lg); overflow:hidden; background:var(--cream-2); aspect-ratio:4/5; }
+.qc-photo img{ width:100%; height:100%; object-fit:cover; object-position:50% 62%; }
+.qc-cards{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:56px 52px; align-content:start; }
+.qc-card__n{ font-family:var(--serif); font-size:30px; line-height:1; color:var(--green); }
+.qc-card h3{ margin:14px 0 10px; font-size:19px; }
+.qc-card p{ margin:0; font-size:14.5px; line-height:1.62; color:var(--muted); }
+
+/* ============================================================
+   03 · SOURCING BAND
+   ============================================================ */
+.band{ background:var(--green); color:var(--cream); padding:104px 0; }
+.band h2,.band h3{ color:var(--cream); }
+.band-head{ display:grid; grid-template-columns:minmax(0,1fr) auto; gap:48px; align-items:start; }
+.src-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:28px; margin-top:64px; }
+.src-card{ position:relative; border-radius:var(--r-lg); overflow:hidden; aspect-ratio:489/651; background:var(--green-deep); }
+.src-card img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .8s var(--ease); }
+.src-card:hover img{ transform:scale(1.045); }
+.src-card__scrim{ position:absolute; inset:0; background:linear-gradient(to top, rgba(9,26,19,.88) 0%, rgba(9,26,19,.55) 32%, rgba(9,26,19,.06) 62%, rgba(9,26,19,0) 100%); }
+.src-card__body{ position:absolute; inset:auto 0 0 0; padding:30px 28px 32px; }
+.src-card h3{ font-size:23px; line-height:1.16; letter-spacing:-.015em; }
+.src-card p{ margin:12px 0 0; font-size:14px; line-height:1.55; color:rgba(253,254,248,.72); }
+
+/* ============================================================
+   04 · SOLUTIONS
+   ============================================================ */
+.sol-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:52px 30px; margin-top:64px; }
+.sol-card__img{ border-radius:var(--r-md); overflow:hidden; margin:0; background:var(--cream-2); }
+.sol-card__img img{ width:100%; aspect-ratio:564/434; object-fit:cover; transition:transform .8s var(--ease); }
+.sol-card:hover .sol-card__img img{ transform:scale(1.05); }
+.sol-card__row{ display:flex; align-items:center; justify-content:space-between; gap:16px; padding:18px 2px 16px; border-bottom:1px solid var(--line); }
+.sol-card h3{ font-size:19px; }
+.sol-card__row svg{ flex:none; color:var(--green); transition:transform .35s var(--ease); }
+.sol-card:hover .sol-card__row svg{ transform:translateX(5px); }
+
+/* ============================================================
+   05 · PROCESS
+   ============================================================ */
+.steps-grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:30px; margin-top:70px; }
+.steps-num .n{ font-family:var(--serif); font-size:clamp(38px,4.4vw,58px); line-height:1; letter-spacing:-.03em; color:var(--green); }
+.rail{ position:relative; height:14px; margin:26px 0 26px; }
+.rail::before{ content:''; position:absolute; left:0; right:0; top:6px; height:1px; background:var(--line); }
+/* the dot is an in-flow grid item so it lands at the left edge of its own column
+   (an absolutely positioned one would all stack at left:0 of the rail) */
+.rail span{ position:relative; width:11px; height:11px; margin-top:1px; border-radius:50%; background:var(--green); }
+.steps-body h3{ font-size:19px; margin-bottom:11px; }
+.steps-body p{ margin:0; font-size:14.5px; line-height:1.6; color:var(--muted); }
+
+/* ============================================================
+   06 · CTA BAND
+   ============================================================ */
+.cta{ background:var(--green); color:var(--cream); padding:104px 0; }
+.cta-grid{ display:grid; grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr); gap:80px; align-items:start; }
+.cta h2{ max-width:14ch; }
+.cta__contacts{ margin-top:36px; border-top:1px solid var(--line-light); }
+.cta__row{ display:flex; align-items:baseline; justify-content:space-between; gap:24px; padding:15px 0; border-bottom:1px solid var(--line-light); }
+.cta__row dt{ font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:rgba(253,254,248,.62); }
+.cta__row dd{ margin:0; font-size:15px; color:var(--cream); }
+form.cta-form{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px 24px; margin:0; }
+.field{ display:flex; flex-direction:column; gap:9px; }
+.field--wide{ grid-column:1 / -1; }
+.field label{ font-size:11.5px; letter-spacing:.13em; text-transform:uppercase; color:rgba(253,254,248,.66); }
+.field input,.field select,.field textarea{
+  width:100%; padding:15px 16px; border-radius:10px;
+  background:rgba(255,255,255,.075); border:1px solid rgba(255,255,255,.13);
+  color:var(--cream); font-size:15px; outline:none;
+  transition:background .25s var(--ease), border-color .25s var(--ease);
+}
+.field textarea{ min-height:132px; resize:vertical; line-height:1.6; }
+.field ::placeholder{ color:rgba(253,254,248,.42); }
+.field input:focus,.field select:focus,.field textarea:focus{ background:rgba(255,255,255,.12); border-color:rgba(253,254,248,.55); }
+.field select{
+  appearance:none; -webkit-appearance:none; cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FDFEF8' stroke-width='1.6'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 15px center; background-size:16px; padding-right:44px;
+}
+.field select option{ background:var(--green-deep); color:var(--cream); }
+.cta-form .btn{ grid-column:1 / -1; justify-self:start; min-width:290px; }
+.form-done{ grid-column:1 / -1; margin:0; font-size:14.5px; color:rgba(253,254,248,.82); }
+.form-error{ grid-column:1 / -1; margin:0; font-size:14px; color:#FFCEC1; }
+.cta-form .btn[disabled]{ opacity:.65; cursor:progress; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.ftr{ background:var(--cream); padding:82px 0 46px; }
+.ftr__grid{ display:grid; grid-template-columns:minmax(0,1.5fr) repeat(4,minmax(0,1fr)); gap:44px; }
+.ftr__brand .brand{ color:var(--ink); font-size:27px; }
+.ftr__brand p{ margin:20px 0 0; max-width:34ch; font-size:14px; line-height:1.66; color:var(--muted); }
+.ftr .socials{ margin-top:26px; color:var(--ink); }
+.ftr .socials a:hover{ background:var(--cream-3); }
+.ftr h4{ margin:4px 0 20px; font-family:var(--sans); font-size:11.5px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); }
+.ftr ul{ margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:12px; }
+.ftr li a,.ftr address{ font-size:14px; color:var(--ink); opacity:.88; transition:opacity .25s var(--ease); }
+.ftr li a:hover{ opacity:1; color:var(--green); }
+.ftr address{ font-style:normal; display:flex; flex-direction:column; gap:12px; }
+.ftr address span{ display:flex; gap:10px; align-items:flex-start; line-height:1.5; }
+.ftr address svg{ flex:none; width:15px; height:15px; margin-top:3px; color:var(--muted); }
+.ftr__bottom{ display:flex; flex-wrap:wrap; gap:16px 28px; justify-content:space-between; margin-top:66px; padding-top:24px; border-top:1px solid var(--line); font-size:12.5px; color:var(--muted); }
+
+/* ---------- 07 · insights ---------- */
+/* 卡片内容由 article-builder 在发布时静态写入下方标记区间，
+   不靠 JS 注入 —— 爬虫要在源码里就能读到标题和链接 */
+.ins-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:34px; margin-top:64px; }
+.ins-card{ display:block; min-width:0; }
+.ins-card:only-child{ max-width:calc((100% - 68px) / 3); }
+.ins-card__img{ margin:0; aspect-ratio:16/10; border-radius:var(--r-md); overflow:hidden; background:var(--cream-3); }
+.ins-card__img img{ width:100%; height:100%; object-fit:cover; transition:transform .7s var(--ease); }
+.ins-card:hover .ins-card__img img{ transform:scale(1.045); }
+.ins-card time{ display:block; margin-top:18px; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted-warm); }
+.ins-card h3{ margin-top:10px; font-size:20px; line-height:1.32; letter-spacing:-.01em; transition:color .3s var(--ease); }
+.ins-card:hover h3{ color:var(--green); }
+.ins-card p{ margin:10px 0 0; font-size:14px; line-height:1.66; color:var(--muted); }
+
+@media (max-width:1080px){ .ins-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:30px; } .ins-card:only-child{ max-width:calc((100% - 30px) / 2); } }
+@media (max-width:860px){ .ins-grid{ grid-template-columns:1fr; gap:26px; margin-top:44px; } .ins-card:only-child{ max-width:none; } }
+
+/* ---------- reveal ---------- */
+.reveal{ opacity:0; transform:translateY(20px); transition:opacity .8s var(--ease), transform .8s var(--ease); }
+.reveal.in{ opacity:1; transform:none; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:1080px){
+  :root{ --gut:32px; }
+  .cert{ grid-template-columns:1fr; gap:56px; }
+  .qc-head{ grid-template-columns:1fr; gap:40px; }
+  .qc-stats{ flex-direction:row; gap:44px; flex-wrap:wrap; }
+  .stat{ border-top:1px solid var(--line); padding-top:18px; }
+  .qc-stats .btn{ margin-top:0; }
+  .qc-body{ grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:44px; }
+  .src-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .src-card:last-child{ grid-column:1 / -1; aspect-ratio:16/9; }
+  .steps-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:52px 30px; }
+  .rail{ display:none; }
+  .cta-grid{ grid-template-columns:1fr; gap:52px; }
+  .ftr__grid{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:44px 32px; }
+  .ftr__brand{ grid-column:1 / -1; }
+}
+@media (max-width:860px){
+  .sec,.sec--tight,.band,.cta{ padding:76px 0; }
+  /* narrow viewports crop the facade photo to its dark window band and the copy
+     spans the full width -> the left-to-right hero scrim no longer protects it */
+  .hero__scrim{
+    background:
+      linear-gradient(to top, rgba(8,26,18,.95) 0%, rgba(8,26,18,.88) 45%, rgba(8,26,18,.68) 72%, rgba(8,26,18,.55) 100%);
+  }
+  .hero__bg img{ object-position:50% 42%; }
+  .nav{ display:none; }
+  .burger{ display:grid; place-items:center; width:38px; height:38px; border:1px solid currentColor; border-radius:50%; background:none; cursor:pointer; }
+  .burger span{ display:block; width:15px; height:1.5px; background:currentColor; box-shadow:0 -5px 0 currentColor, 0 5px 0 currentColor; }
+  .hdr.is-stuck .socials{ display:none; }
+  .qc-body{ grid-template-columns:1fr; }
+  .qc-photo{ aspect-ratio:4/5; max-height:520px; }
+  .src-grid,.sol-grid{ grid-template-columns:1fr; }
+  .src-card:last-child{ aspect-ratio:489/651; }
+  .sec-head{ flex-direction:column; gap:30px; }
+  .sec-head__aside{ align-items:flex-start; }
+  .band-head{ grid-template-columns:1fr; gap:28px; }
+  .cta-form{ grid-template-columns:1fr; }
+  .hero__foot{ margin-top:46px; }
+}
+@media (max-width:560px){
+  :root{ --gut:20px; --hdr:64px; }
+  body{ font-size:15.5px; }
+  .brand{ font-size:20px; }
+  .hdr__right .socials{ display:none; }   /* they stay in the footer */
+  .socials a{ width:30px; height:30px; }
+  .cert-item{ width:150px; margin-right:14px; }
+  .qc-cards{ grid-template-columns:1fr; gap:36px; }
+  .steps-grid{ grid-template-columns:1fr; }
+  .sec-head__aside .btn,.sec-head__cta .btn,.band-head .btn{ width:100%; justify-content:center; }
+  .cta-form .btn{ min-width:0; width:100%; }
+  .hero__lede{ font-size:16px; }
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+  html{ scroll-behavior:auto; }
+  .reveal{ opacity:1; transform:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="hdr" id="hdr">
+  <div class="hdr__in">
+    <a class="brand" href="#top" aria-label="SEYE Biomedical — home">SEYE</a>
+    <nav class="nav" aria-label="Primary">
+      <a href="#top">Home</a>
+      <a href="#products">Products</a>
+      <a href="#about">About</a>
+      <a href="#factory">Our Factory</a>
+      <a href="insights/">Insights</a>
+    </nav>
+    <div class="hdr__right">
+      <button class="lang" type="button" aria-label="Switch language">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 2.5 15.4 0 18M12 3c-2.5 2.6-2.5 15.4 0 18"/>
+        </svg>
+        EN
+      </button>
+      <div class="socials">
+        <a href="#" aria-label="SEYE on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+        <a href="#" aria-label="SEYE on TikTok"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 5.8a5 5 0 0 1-1.2-3.3h-3.1v11.1a2.6 2.6 0 1 1-2.2-2.6V7.8a5.8 5.8 0 1 0 5.3 5.8V9.3a7.9 7.9 0 0 0 4.1 1.2V7.4a4.9 4.9 0 0 1-2.9-1.6Z"/></svg></a>
+        <a href="#" aria-label="SEYE on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.4h2.5l.4-2.9h-2.9V8.9c0-.8.2-1.4 1.4-1.4h1.6V4.9c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2h-2.6v2.9h2.6V21h3.2Z"/></svg></a>
+      </div>
+      <button class="burger" type="button" aria-label="Open menu"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="top">
+  <div class="hero__bg">
+    <img src="assets/hero.jpg" alt="SEYE Biomedical manufacturing facility in Guangzhou" fetchpriority="high">
+    <div class="hero__scrim"></div>
+  </div>
+  <div class="hero__in">
+    <p class="eyebrow is-light"><span>Premium</span> Skincare Manufacturer</p>
+    <h1>From Formula<br>to Finished<br>Skincare.</h1>
+    <p class="hero__lede">
+      One team for every stage — from concept and formula development to scalable
+      production and export-ready finished goods. 80,000&nbsp;m² of medical-grade
+      capacity in Guangzhou, built for brands worldwide.
+    </p>
+    <div class="hero__cta">
+      <a class="btn btn-solid" href="#contact">Start Your Project
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+      </a>
+      <a class="btn btn-outline-light" href="#about">Our Capabilities</a>
+    </div>
+    <div class="hero__foot">
+      <b>01</b><i></i><em>Scroll</em>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 01 · CERTIFICATES ================= -->
+<section class="sec" id="about">
+  <div class="wrap">
+    <div class="cert">
+      <div class="marquee reveal" aria-label="Certificate library">
+        <div class="marquee__track" id="certTrack">
+          <!-- 9 certificates, duplicated for a seamless loop (JS) -->
+        </div>
+      </div>
+
+      <div class="reveal" style="--d:.1s">
+        <p class="eyebrow"><span>01 ·</span> Certification &amp; Compliance</p>
+        <h2>Documents that support global sourcing.</h2>
+        <p class="lede">
+          Certificates, test reports and safety documentation prepared for the markets you
+          sell into — ready to hand to your distributor, your retailer, or customs.
+        </p>
+        <ul class="tags">
+          <li>GMPC</li><li>ISO 22716</li><li>US FDA</li><li>CPNP</li><li>BPOM</li><li>HALAL</li><li>MSDS</li>
+        </ul>
+        <div class="sec-head__cta">
+          <a class="btn btn-solid" href="#contact">Download Document List
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 02 · QUALITY CONTROL ================= -->
+<section class="sec sec--tight" style="background:var(--cream-2)" id="factory">
+  <div class="wrap">
+    <div class="qc-head">
+      <div class="reveal">
+        <p class="eyebrow"><span>02 ·</span> Quality Control</p>
+        <h2>Controlled from material to market.</h2>
+        <p class="lede">
+          From raw material intake to finished goods release, every batch moves through
+          documented checkpoints — so what you approve in the sample is what you receive in bulk.
+        </p>
+      </div>
+      <div class="qc-stats reveal" style="--d:.1s">
+        <div class="stat"><b>&lt;0.05%</b><span>Out-of-spec batch rate</span></div>
+        <div class="stat"><b>15 min</b><span>Average quotation response</span></div>
+        <a class="btn btn-outline" href="#contact">Explore Quality Management
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="qc-body">
+      <figure class="qc-photo reveal">
+        <img src="assets/qc-lab.jpg" alt="SEYE quality-control scientist testing a formulation in the laboratory" loading="lazy">
+      </figure>
+      <div class="qc-cards">
+        <article class="qc-card reveal">
+          <div class="qc-card__n">01</div>
+          <h3>Incoming Materials</h3>
+          <p>Every raw material is verified against its specification — identity, purity, assay and microbial limits — before it is released to production.</p>
+        </article>
+        <article class="qc-card reveal" style="--d:.08s">
+          <div class="qc-card__n">02</div>
+          <h3>Formula Validation</h3>
+          <p>Formulas are proven for stability, compatibility and sensory performance, so scale-up does not change how the product feels.</p>
+        </article>
+        <article class="qc-card reveal" style="--d:.16s">
+          <div class="qc-card__n">03</div>
+          <h3>In-Process Control</h3>
+          <p>In-line checks on pH, viscosity, homogeneity and microbial load at every critical stage of the batch.</p>
+        </article>
+        <article class="qc-card reveal" style="--d:.24s">
+          <div class="qc-card__n">04</div>
+          <h3>Finished Product Release</h3>
+          <p>Batches are released only after full microbiological and physicochemical testing against the approved specification.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 · SOURCING ================= -->
+<section class="band" id="sourcing">
+  <div class="wrap">
+    <div class="band-head">
+      <div class="reveal">
+        <p class="eyebrow is-light"><span>03 ·</span> Pricing &amp; Sourcing</p>
+        <h2>Smarter Sourcing.<br>Better Cost Control.</h2>
+        <p class="lede is-light">
+          We integrate high-quality raw materials, packaging components and direct supply
+          partners — so formula, fill and freight land at a predictable landed cost.
+        </p>
+      </div>
+      <a class="btn btn-outline-light reveal" style="--d:.1s" href="#contact">Explore Sourcing
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+
+    <div class="src-grid">
+      <article class="src-card reveal">
+        <img src="assets/src-materials.jpg" alt="Botanical raw materials and laboratory glassware" loading="lazy">
+        <div class="src-card__scrim"></div>
+        <div class="src-card__body">
+          <h3>Global Raw<br>Material Sourcing</h3>
+          <p>Direct relationships with 100+ certified suppliers keep material cost predictable and quality traceable.</p>
+        </div>
+      </article>
+      <article class="src-card reveal" style="--d:.08s">
+        <img src="assets/src-packaging.jpg" alt="Airless pump and dropper packaging components" loading="lazy">
+        <div class="src-card__scrim"></div>
+        <div class="src-card__body">
+          <h3>Packaging<br>Components</h3>
+          <p>Airless, tube, jar and dropper formats sourced in-house and matched to your formula and price point.</p>
+        </div>
+      </article>
+      <article class="src-card reveal" style="--d:.16s">
+        <img src="assets/src-supply.jpg" alt="Automated cosmetics filling line" loading="lazy">
+        <div class="src-card__scrim"></div>
+        <div class="src-card__body">
+          <h3>Supply Chain<br>Integration</h3>
+          <p>Filling, assembly, QC release and export documentation handled under one roof.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 04 · SOLUTIONS ================= -->
+<section class="sec" id="products">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="reveal">
+        <p class="eyebrow"><span>04 ·</span> Skincare Solutions</p>
+        <h2>Skincare Solutions<br>We Manufacture</h2>
+        <p class="lede">
+          End-to-end OEM, ODM and private label across the categories that move fastest in
+          your market — from a single reference formula to a full launch range.
+        </p>
+      </div>
+      <div class="sec-head__aside reveal" style="--d:.1s">
+        <a class="btn btn-outline" href="#contact">Discuss Your Project
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+        </a>
+        <p class="sec-note">OEM · ODM · Private Label</p>
+      </div>
+    </div>
+
+    <div class="sol-grid" id="solGrid">
+      <!-- 6 category cards (JS) -->
+    </div>
+  </div>
+</section>
+
+<!-- ================= 05 · PROCESS ================= -->
+<section class="sec sec--tight" style="background:var(--cream-2)" id="process">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="reveal">
+        <p class="eyebrow"><span>05 ·</span> How We Work</p>
+        <h2>From Your Brief<br>to Production.</h2>
+        <p class="lede">
+          A clear process, so you always know what is happening, what we need from you,
+          and when the next decision lands.
+        </p>
+      </div>
+      <div class="sec-head__aside reveal" style="--d:.1s">
+        <a class="btn btn-outline" href="#contact">Request Free Sample
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="steps-grid steps-num reveal">
+      <div><div class="n">01</div></div>
+      <div><div class="n">02</div></div>
+      <div><div class="n">03</div></div>
+      <div><div class="n">04</div></div>
+    </div>
+    <div class="steps-grid rail reveal" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="steps-grid steps-body">
+      <article class="reveal">
+        <h3>Share Your Brief</h3>
+        <p>Tell us your product goals, target market, reference products and expected volume.</p>
+      </article>
+      <article class="reveal" style="--d:.08s">
+        <h3>Align the Solution</h3>
+        <p>Review formula directions, packaging options, MOQ tiers and indicative pricing.</p>
+      </article>
+      <article class="reveal" style="--d:.16s">
+        <h3>Sample &amp; Approve</h3>
+        <p>Evaluate the sample set, refine the texture and scent profile, then sign off the specification.</p>
+      </article>
+      <article class="reveal" style="--d:.24s">
+        <h3>Produce &amp; Deliver</h3>
+        <p>Bulk production, QC release, artwork and export documentation — shipped on schedule.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 07 · INSIGHTS ================= -->
+<section class="sec" id="insights">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="reveal">
+        <p class="eyebrow">Insights</p>
+        <h2>Notes from<br>the factory floor.</h2>
+        <p class="lede">
+          How skincare brands are actually made — formulation, quality control, MOQs,
+          packaging and the paperwork that gets products across borders.
+        </p>
+      </div>
+      <div class="sec-head__aside reveal" style="--d:.1s">
+        <a class="btn btn-outline" href="insights/">All Insights
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="ins-grid" id="insGrid">
+      <!-- ARTICLES:START -->
+      <a class="ins-card reveal" href="insights/how-to-choose-a-skincare-oem-manufacturer/"><figure class="ins-card__img"><img src="assets/hero.jpg" alt="SEYE Biomedical production facility in Guangzhou" loading="lazy"></figure><time datetime="2026-10-30">30 October 2026</time><h3>How to Choose a Skincare OEM Manufacturer: What to Verify Before You Sign</h3><p>A practical checklist for vetting skincare OEM and ODM factories: licences, formula ownership, in-process QC, MOQ terms, packaging…</p></a>
+<a class="ins-card reveal" href="insights/reading-a-cosmetic-certificate-of-analysis/"><figure class="ins-card__img"><img src="assets/ins-coa.jpg" alt="Botanical raw material specimens in laboratory glassware" loading="lazy"></figure><time datetime="2026-10-28">28 October 2026</time><h3>How to Read a Cosmetic Certificate of Analysis (and Spot a Fabricated One)</h3><p>What a cosmetic CoA must contain, which results buyers misread — pH, viscosity, microbiological limits — and how to tell a genuine…</p></a>
+      <!-- ARTICLES:END -->
+    </div>
+  </div>
+</section>
+
+<!-- ================= 06 · CTA ================= -->
+<section class="cta" id="contact">
+  <div class="wrap cta-grid">
+    <div class="reveal">
+      <p class="eyebrow is-light"><span>06 ·</span> Let's Make It Happen</p>
+      <h2>Ready to Start<br>Your Skincare<br>Project?</h2>
+      <p class="lede is-light">
+        Tell us about your product, target market and expected volume. Our team will come
+        back with a tailored proposal and an indicative quote — usually within two business days.
+      </p>
+      <!-- TODO: confirm the WhatsApp number and enquiry email before going live -->
+      <dl class="cta__contacts">
+        <div class="cta__row"><dt>WhatsApp</dt><dd>+86 180 4077 7742</dd></div>
+        <div class="cta__row"><dt>Email</dt><dd>inquiry@seyecosmetic.com</dd></div>
+      </dl>
+    </div>
+
+    <!-- Netlify Forms: the pair (name + data-netlify) is what the build scanner looks for.
+         Set the same name in Site settings → Forms → project-brief, then enable Form detection
+         BEFORE redeploying, otherwise submissions are silently discarded. -->
+    <form class="cta-form reveal" style="--d:.1s" id="briefForm"
+          name="project-brief" method="POST" data-netlify="true"
+          data-netlify-honeypot="bot-field" novalidate>
+      <!-- No manual form-name input: this is static HTML, so Netlify's build step
+           strips data-netlify and injects the hidden form-name itself. Adding one here
+           would send the field twice. -->
+      <p hidden><label>Leave this field empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+
+      <div class="field">
+        <label for="f-name">Name *</label>
+        <input id="f-name" name="name" type="text" placeholder="Your name" required>
+      </div>
+      <div class="field">
+        <label for="f-email">Email *</label>
+        <input id="f-email" name="email" type="email" placeholder="you@company.com" required>
+      </div>
+      <div class="field">
+        <label for="f-cat">Product Category *</label>
+        <select id="f-cat" name="category" required>
+          <option value="" selected disabled>Select a category</option>
+          <option>Face Care</option>
+          <option>Body Care</option>
+          <option>Sun Care</option>
+          <option>Eye Care</option>
+          <option>Lip Care</option>
+          <option>Hand &amp; Foot Care</option>
+          <option>Other / Not sure yet</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-qty">Estimated Quantity *</label>
+        <input id="f-qty" name="quantity" type="text" placeholder="e.g. 3,000 units / batch" required>
+      </div>
+      <div class="field field--wide">
+        <label for="f-brief">Project Brief *</label>
+        <textarea id="f-brief" name="brief" placeholder="Product category, target market, preferred texture, packaging and expected launch date" required></textarea>
+      </div>
+      <button class="btn btn-white" type="submit">Prepare Project Brief
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr__grid">
+      <div class="ftr__brand">
+        <div class="brand">SEYE</div>
+        <p>Guangzhou-based medical-grade skincare manufacturer — OEM, ODM and private label for brands across 30+ countries.</p>
+        <div class="socials">
+          <a href="#" aria-label="SEYE on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" aria-label="SEYE on TikTok"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 5.8a5 5 0 0 1-1.2-3.3h-3.1v11.1a2.6 2.6 0 1 1-2.2-2.6V7.8a5.8 5.8 0 1 0 5.3 5.8V9.3a7.9 7.9 0 0 0 4.1 1.2V7.4a4.9 4.9 0 0 1-2.9-1.6Z"/></svg></a>
+          <a href="#" aria-label="SEYE on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.4h2.5l.4-2.9h-2.9V8.9c0-.8.2-1.4 1.4-1.4h1.6V4.9c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2h-2.6v2.9h2.6V21h3.2Z"/></svg></a>
+        </div>
+      </div>
+
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#about">About SEYE</a></li>
+          <li><a href="#factory">Our Factory</a></li>
+          <li><a href="#about">Certifications</a></li>
+          <li><a href="insights/">News &amp; Insights</a></li>
+          <li><a href="#">Careers</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Capabilities</h4>
+        <ul>
+          <li><a href="#products">Custom Formulation</a></li>
+          <li><a href="#products">Formulation Development</a></li>
+          <li><a href="#about">Regulatory Support</a></li>
+          <li><a href="#factory">Quality Assurance</a></li>
+          <li><a href="#">Packaging Solutions</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Products</h4>
+        <ul>
+          <li><a href="#products">Face Care</a></li>
+          <li><a href="#products">Body Care</a></li>
+          <li><a href="#products">Sun Care</a></li>
+          <li><a href="#products">Eye Care</a></li>
+          <li><a href="#products">Lip Care</a></li>
+          <li><a href="#products">Hand &amp; Foot Care</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Contact</h4>
+        <address>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>
+            80,000 m² Production Base, Baiyun Meiwan Beauty &amp; Health Industrial Park, Guangzhou, China
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4.5 4h4l2 5-2.2 1.6a13 13 0 0 0 5.9 5.9L16 14.3l5 2v4a1 1 0 0 1-1.1 1A17 17 0 0 1 3.5 5.1 1 1 0 0 1 4.5 4Z"/></svg>
+            +86 180 4077 7742
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.6 6.6 8.4 6 8.4-6"/></svg>
+            inquiry@seyecosmetic.com
+          </span>
+        </address>
+      </div>
+    </div>
+
+    <div class="ftr__bottom">
+      <span>© <span id="yr">2026</span> SEYE Biomedical Co., Ltd. All rights reserved.</span>
+      <span>Privacy Policy · Terms of Use</span>
+    </div>
+  </div>
+</footer>
+
+<script src="content.js"></script>
+<script src="cms.js"></script>
+<script>
+/* ---------- data ---------- */
+/* 文案来自 content.js（由 admin.html 编辑）。这份常量只是兜底：
+   如果 content.js 缺失或某个数组为空，就退回这里的原始文案，页面照常显示。 */
+const SC = window.SITE_CONTENT || {};
+
+const CERTS = (SC.certs && SC.certs.length) ? SC.certs.map(c => [c.t, c.s, c.img]) : [
+  ['MSDS',                 'Material Safety Data Sheet',            'cert-09.jpg'],
+  ['ISO 22716',            'Cosmetic Good Manufacturing Practices', 'cert-06.jpg'],
+  ['US FDA GMP',           'Cosmetic Good Manufacturing Practice',  'cert-02.jpg'],
+  ['HALAL',                'Halal Product Certification',           'cert-05.jpg'],
+  ['Indonesia BPOM',       'Cosmetic Product Notification',         'cert-03.jpg'],
+  ['FDA Registration',     'U.S. FDA Establishment Registration',   'cert-04.jpg'],
+  ['Intertek WCA',         'Workplace Conditions Assessment',       'cert-08.jpg'],
+  ['Product Inspection',   'Quality Inspection Report',             'cert-01.jpg'],
+  ['Infant Care',          'Infant Care Professional Certification', 'cert-07.jpg'],
+];
+
+/* 内容来自用户输入，插入 innerHTML 前必须转义，否则 & < > 会破版 */
+const cmsEsc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+const CATEGORIES = (SC.sol && SC.sol.cards && SC.sol.cards.length)
+  ? SC.sol.cards.map(c => [cmsEsc(c.name), c.img, c.desc])
+  : [
+  ['Face Care',       'cat-face.jpg', 'Facial creams, serums, essences, cleansers and masks.'],
+  ['Body Care',       'cat-body.jpg', 'Body lotions, butters, scrubs and firming treatments.'],
+  ['Sun Care',        'cat-sun.jpg',  'Mineral and hybrid SPF, sunscreen sticks and after-sun.'],
+  ['Eye Care',        'cat-eye.jpg',  'Eye creams, gels, patches and anti-ageing concentrates.'],
+  ['Lip Care',        'cat-lip.jpg',  'Lip balms, masks, oils and tinted treatment sticks.'],
+  ['Hand &amp; Foot Care', 'cat-hand.jpg', 'Hand creams, foot masks, cuticle and heel treatment.'],
+];
+
+/* ---------- build certificate marquee (2 identical passes = seamless -50% loop) ---------- */
+const certTrack = document.getElementById('certTrack');
+const certItem = ([title, sub, file]) =>
+  `<article class="cert-item">
+     <div class="cert-item__img"><img src="assets/${file}" alt="${title} certificate"></div>
+     <h3>${title}</h3>
+     <p>${sub}</p>
+   </article>`;
+certTrack.innerHTML = CERTS.map(certItem).join('') +
+  CERTS.map(certItem).join('').replace(/<article/g, '<article aria-hidden="true"');
+
+/* ---------- build category grid ---------- */
+document.getElementById('solGrid').innerHTML = CATEGORIES.map(([name, file, desc], i) => `
+  <a class="sol-card reveal" style="--d:${(i % 3) * 0.08}s" href="#contact" title="${desc.replace(/<[^>]+>/g,'')}">
+    <figure class="sol-card__img"><img src="assets/${file}" alt="${name.replace(/&amp;/g,'&')}" loading="lazy"></figure>
+    <div class="sol-card__row">
+      <h3>${name}</h3>
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+    </div>
+  </a>`).join('');
+
+/* ---------- sticky header ---------- */
+const hdr = document.getElementById('hdr');
+const onScroll = () => hdr.classList.toggle('is-stuck', window.scrollY > window.innerHeight * 0.72);
+onScroll();
+addEventListener('scroll', onScroll, { passive: true });
+
+/* ---------- reveal on scroll ---------- */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach((e) => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  });
+}, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach((el, i) => {
+  if (!el.style.getPropertyValue('--d')) el.style.setProperty('--d', `${(i % 4) * 0.06}s`);
+  el.style.transitionDelay = 'var(--d, 0s)';
+  io.observe(el);
+});
+
+/* ---------- enquiry form → Netlify Forms ----------
+   Posts URL-encoded to the site root, which is where Netlify listens for
+   submissions of a detected form. JSON bodies are NOT supported.
+   Swapping to Formspree / Cloudflare later = change `endpoint` only.        */
+const briefForm = document.getElementById('briefForm');
+const FORM_ENDPOINT = '/';
+
+briefForm.addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  if (!briefForm.checkValidity()) { briefForm.reportValidity(); return; }
+
+  const btn = briefForm.querySelector('button[type="submit"]');
+  const label = btn.innerHTML;
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    const res = await fetch(FORM_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(new FormData(briefForm)).toString(),
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+    briefForm.replaceChildren(Object.assign(document.createElement('p'), {
+      className: 'form-done',
+      textContent: 'Thank you — your brief has been received. Our team will come back to you within two business days.',
+    }));
+  } catch (err) {
+    btn.disabled = false;
+    btn.innerHTML = label;
+    let warn = briefForm.querySelector('.form-error');
+    if (!warn) {
+      warn = document.createElement('p');
+      warn.className = 'form-error';
+      briefForm.appendChild(warn);
+    }
+    warn.textContent = 'Sorry, that did not go through. Please contact us on WhatsApp or by email instead.';
+  }
+});
+
+document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# 构建产物：Netlify 会用 node build-articles.js 自己生成，不需要进仓库
+dist/
+*.zip
+
+# 本地清理用的暂存区（网络盘上删不掉的文件挪到这里）
+_quarantine/
+
+# 系统缓存 / 临时预览图
+Thumbs.db
+.DS_Store
+preview-homepage-full.jpg
+
+# 建模用的源图，不参与部署
+assets/_unused-source-png/
