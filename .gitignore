@@ -12,3 +12,9 @@ preview-homepage-full.jpg
 
 # 建模用的源图，不参与部署
 assets/_unused-source-png/
+
+# 本机凭据（若用 token 代替 Git Credential Manager 才需要）
+_secrets/
+
+# 迁移包输出（会落到上一级目录，这里再挡一道）
+迁移包/
