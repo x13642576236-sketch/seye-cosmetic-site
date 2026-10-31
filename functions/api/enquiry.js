@@ -82,13 +82,19 @@ export async function onRequestPost({ request, env }) {
     _captcha: 'false'
   };
 
+  /* FormSubmit 会校验来源站点：没有 Origin 时它当成"本地打开 HTML 文件"直接拒绝，
+     所以这里把本站的 origin 显式带上（服务端转发时浏览器头不会被继承）。 */
+  const siteOrigin = new URL(request.url).origin;
+
   let upstream;
   try {
     upstream = await fetch('https://formsubmit.co/ajax/' + encodeURIComponent(to), {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        accept: 'application/json'
+        accept: 'application/json',
+        origin: siteOrigin,
+        referer: siteOrigin + '/'
       },
       body: JSON.stringify(payload)
     });
@@ -96,8 +102,17 @@ export async function onRequestPost({ request, env }) {
     return json({ ok: false, error: 'Delivery service unreachable.' }, 502);
   }
 
-  if (!upstream.ok) {
-    return json({ ok: false, error: 'Delivery failed (HTTP ' + upstream.status + ').' }, 502);
+  /* 上游用字符串 "true"/"false"，不是布尔值；HTTP 200 也可能表示"待激活"或"被限流"，
+     所以必须看 body，不能只看状态码。 */
+  let reply = null;
+  try { reply = await upstream.json(); } catch (e) { /* 非 JSON */ }
+  const accepted = reply && String(reply.success) === 'true';
+
+  if (!upstream.ok || !accepted) {
+    return json({
+      ok: false,
+      error: (reply && reply.message) || ('Delivery failed (HTTP ' + upstream.status + ').')
+    }, 502);
   }
 
   return json({ ok: true });
