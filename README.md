@@ -135,6 +135,13 @@ on a plain `cmd` PATH, so the script probes `PATH` first and then falls back to 
 install locations. It also stops if `index.html` has been polluted by a visual editor
 (`data-page-node-id` attributes) or if the build fails, so a broken build never reaches GitHub.
 
+**Keep every `.bat` / `.cmd` file ASCII-only.** `cmd.exe` parses batch files with the legacy
+codepage, not UTF-8, so a Chinese comment or a path containing Chinese characters turns into
+garbage commands and the window closes silently on double-click — no error, which is the worst
+kind of failure to debug. `chcp 65001` does not save you: the line is re-decoded before it runs.
+If an entry point has to reach this folder (whose path contains 中文), go through the ASCII
+junction `C:\seye` → this directory.
+
 The host rebuilds from GitHub on every push to `main` — nothing else to do after `publish.js`.
 `release.bat` (build + zip) is legacy from the manual-drag era and is no longer needed.
 

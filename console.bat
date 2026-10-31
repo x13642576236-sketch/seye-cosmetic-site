@@ -1,14 +1,15 @@
 @echo off
 chcp 65001 >nul
-title SEYE 控制台
-rem 双击这个文件：起一个只在本机运行的小服务，然后自动打开控制台页面。
-rem 关掉那个黑窗口，控制台就停了，不影响网站。
+title SEYE Control Room
+rem Double-click this file to start the control room.
+rem Keep this file ASCII-only: cmd.exe reads .bat with the legacy codepage,
+rem so Chinese characters here break the parser and the window closes silently.
 pushd "%~dp0"
 
 where node >nul 2>&1
 if errorlevel 1 (
   echo.
-  echo  [STOP] 没找到 Node.js。去 https://nodejs.org 装 18 以上版本。
+  echo  [STOP] Node.js not found. Install Node 18+ from https://nodejs.org
   echo.
   popd
   pause
@@ -16,5 +17,9 @@ if errorlevel 1 (
 )
 
 node console\server.js
+set RC=%ERRORLEVEL%
 
 popd
+echo.
+echo  Console stopped. Exit code: %RC%
+pause
