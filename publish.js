@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* 一键发布：构建 → 提交 → 推送。Netlify 收到 push 后自己重建上线。
+/* 一键发布：构建 → 提交 → 推送。Cloudflare Pages 收到 push 后自己重建上线。
  *
  * 为什么用 Node 而不是纯 .bat：
  * 这台机器没有安装系统版 Git，git.exe 在 WorkBuddy 的 PortableGit 目录里，
@@ -156,7 +156,7 @@ async function main() {
   }
 
   line();
-  line('  完成。Netlify 大约一分钟后自动上线。');
+  line('  完成。Cloudflare Pages 大约一分钟后自动上线。');
   line(`  ${LIVE}`);
   line();
   return 0;
