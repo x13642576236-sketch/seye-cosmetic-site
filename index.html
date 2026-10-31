@@ -416,7 +416,9 @@ form.cta-form{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:
 .ftr li a,.ftr address{ font-size:14px; color:var(--ink); opacity:.88; transition:opacity .25s var(--ease); }
 .ftr li a:hover{ opacity:1; color:var(--green); }
 .ftr address{ font-style:normal; display:flex; flex-direction:column; gap:12px; }
-.ftr address span{ display:flex; gap:10px; align-items:flex-start; line-height:1.5; }
+.ftr address span{ display:flex; gap:10px; align-items:flex-start; line-height:1.5; min-width:0; overflow-wrap:anywhere; }
+/* 邮箱、域名这类不可断行的串在窄屏会把整页撑出横向滚动，允许在任意字符处折行 */
+.ftr address a,.ftr address span,.ftr li a{ overflow-wrap:anywhere; }
 .ftr address svg{ flex:none; width:15px; height:15px; margin-top:3px; color:var(--muted); }
 .ftr__bottom{ display:flex; flex-wrap:wrap; gap:16px 28px; justify-content:space-between; margin-top:66px; padding-top:24px; border-top:1px solid var(--line); font-size:12.5px; color:var(--muted); }
 
