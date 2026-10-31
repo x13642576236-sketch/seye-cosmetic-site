@@ -14,21 +14,93 @@
 <!-- 这一行由发布流程写入：测试模式为 noindex，正式上线取消后重新发布 -->
 <!-- ROBOTS:START --><meta name="robots" content="noindex,nofollow"><!-- ROBOTS:END -->
 
-<!-- social sharing. NOTE: og:url / og:image are rewritten to absolute URLs on deploy —
-     crawlers (WhatsApp, LinkedIn, X) do not resolve relative paths here. -->
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="SEYE Biomedical">
-<meta property="og:title" content="From Formula to Finished Skincare — SEYE Biomedical">
-<meta property="og:description" content="Guangzhou-based OEM / ODM / private-label skincare manufacturer. Custom formulation, medical-grade quality control and export-ready documentation for brands in 30+ countries.">
-<meta property="og:image" content="assets/og-cover.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="SEYE Biomedical — From Formula to Finished Skincare">
-<meta property="og:url" content="">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="From Formula to Finished Skincare — SEYE Biomedical">
-<meta name="twitter:description" content="OEM / ODM / private-label skincare manufacturing in Guangzhou. Formula development, QC and export documentation under one roof.">
-<meta name="twitter:image" content="assets/og-cover.jpg">
+<!-- canonical + social sharing + JSON-LD。
+     这一整块由 node build-articles.js 生成，不要手改 —— 里面的绝对地址全部来自
+     site.config.js 的 baseUrl，手改过的内容下次构建就被覆盖。 -->
+<!-- SEO:START -->
+  <link rel="canonical" href="https://seye-cosmetic-site.netlify.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SEYE Biomedical">
+  <meta property="og:title" content="From Formula to Finished Skincare — SEYE Biomedical">
+  <meta property="og:description" content="Guangzhou-based OEM / ODM / private-label skincare manufacturer. Custom formulation, medical-grade quality control and export-ready documentation for brands in 30+ countries.">
+  <meta property="og:url" content="https://seye-cosmetic-site.netlify.app/">
+  <meta property="og:image" content="https://seye-cosmetic-site.netlify.app/assets/og-cover.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="From Formula to Finished Skincare — SEYE Biomedical">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="From Formula to Finished Skincare — SEYE Biomedical">
+  <meta name="twitter:description" content="Guangzhou-based OEM / ODM / private-label skincare manufacturer. Custom formulation, medical-grade quality control and export-ready documentation for brands in 30+ countries.">
+  <meta name="twitter:image" content="https://seye-cosmetic-site.netlify.app/assets/og-cover.jpg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://seye-cosmetic-site.netlify.app/#organization",
+      "name": "SEYE Biomedical",
+      "alternateName": "SEYE Biomedical Co., Ltd.",
+      "url": "https://seye-cosmetic-site.netlify.app/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://seye-cosmetic-site.netlify.app/assets/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "description": "Guangzhou-based OEM, ODM and private-label skincare manufacturer with 80,000 m² of medical-grade production capacity.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Baiyun Meiwan Beauty & Health Industrial Park",
+        "addressLocality": "Guangzhou",
+        "addressRegion": "Guangdong",
+        "addressCountry": "CN"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "sales",
+        "telephone": "+86-180-4077-7742",
+        "email": "inquiry@seyecosmetic.com",
+        "availableLanguage": [
+          "en",
+          "zh"
+        ]
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://seye-cosmetic-site.netlify.app/#website",
+      "url": "https://seye-cosmetic-site.netlify.app/",
+      "name": "SEYE Biomedical",
+      "description": "SEYE Biomedical is a Guangzhou-based OEM / ODM / private-label skincare manufacturer. Custom formulation, medical-grade quality control, global sourcing and export-ready documentation.",
+      "publisher": {
+        "@id": "https://seye-cosmetic-site.netlify.app/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://seye-cosmetic-site.netlify.app/#webpage",
+      "url": "https://seye-cosmetic-site.netlify.app/",
+      "name": "SEYE Biomedical — From Formula to Finished Skincare",
+      "description": "SEYE Biomedical is a Guangzhou-based OEM / ODM / private-label skincare manufacturer. Custom formulation, medical-grade quality control, global sourcing and export-ready documentation.",
+      "isPartOf": {
+        "@id": "https://seye-cosmetic-site.netlify.app/#website"
+      },
+      "about": {
+        "@id": "https://seye-cosmetic-site.netlify.app/#organization"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://seye-cosmetic-site.netlify.app/assets/og-cover.jpg"
+      },
+      "inLanguage": "en"
+    }
+  ]
+}
+</script>
+<!-- SEO:END -->
 
 <link rel="preload" as="image" href="assets/hero.jpg">
 <link rel="stylesheet" href="assets/fonts/fonts.css">

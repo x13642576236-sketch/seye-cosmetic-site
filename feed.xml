@@ -2,23 +2,23 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
   <title>SEYE Biomedical — Insights</title>
-  <link>https://www.seyecosmetic.com/insights/</link>
+  <link>https://seye-cosmetic-site.netlify.app/insights/</link>
   <description>Practical guidance on skincare OEM, ODM and private-label manufacturing, quality control and export documentation.</description>
   <language>en</language>
   <lastBuildDate>Fri, 30 Oct 2026 09:00:00 GMT</lastBuildDate>
-  <atom:link href="https://www.seyecosmetic.com/feed.xml" rel="self" type="application/rss+xml"/>
+  <atom:link href="https://seye-cosmetic-site.netlify.app/feed.xml" rel="self" type="application/rss+xml"/>
   <item>
     <title>How to Choose a Skincare OEM Manufacturer: What to Verify Before You Sign</title>
-    <link>https://www.seyecosmetic.com/insights/how-to-choose-a-skincare-oem-manufacturer/</link>
-    <guid isPermaLink="true">https://www.seyecosmetic.com/insights/how-to-choose-a-skincare-oem-manufacturer/</guid>
+    <link>https://seye-cosmetic-site.netlify.app/insights/how-to-choose-a-skincare-oem-manufacturer/</link>
+    <guid isPermaLink="true">https://seye-cosmetic-site.netlify.app/insights/how-to-choose-a-skincare-oem-manufacturer/</guid>
     <pubDate>Fri, 30 Oct 2026 09:00:00 GMT</pubDate>
     <description>A practical checklist for vetting skincare OEM and ODM factories: licences, formula ownership, in-process QC, MOQ terms, packaging and export documentation.</description>
     <category>Sourcing</category>
   </item>
   <item>
     <title>How to Read a Cosmetic Certificate of Analysis (and Spot a Fabricated One)</title>
-    <link>https://www.seyecosmetic.com/insights/reading-a-cosmetic-certificate-of-analysis/</link>
-    <guid isPermaLink="true">https://www.seyecosmetic.com/insights/reading-a-cosmetic-certificate-of-analysis/</guid>
+    <link>https://seye-cosmetic-site.netlify.app/insights/reading-a-cosmetic-certificate-of-analysis/</link>
+    <guid isPermaLink="true">https://seye-cosmetic-site.netlify.app/insights/reading-a-cosmetic-certificate-of-analysis/</guid>
     <pubDate>Wed, 28 Oct 2026 09:00:00 GMT</pubDate>
     <description>What a cosmetic CoA must contain, which results buyers misread — pH, viscosity, microbiological limits — and how to tell a genuine report from a template.</description>
     <category>Quality</category>

@@ -558,8 +558,8 @@ body{margin:0;background:var(--cream2);color:var(--ink);font-family:var(--sans);
     return files;
   }
 
-  /* 首页需要改两处：文章卡片 + robots meta。
-     一次读、一次写，避免连续两次覆盖同一个文件。 */
+  /* 首页需要改三处：文章卡片 + robots meta + SEO 头（canonical / og / JSON-LD）。
+     一次读、一次写，避免连续多次覆盖同一个文件。 */
   async function injectIndex(root, posts) {
     try {
       var fh = await root.getFileHandle('index.html');
@@ -571,6 +571,11 @@ body{margin:0;background:var(--cream2);color:var(--ink);font-family:var(--sans);
       var withR = B.injectRobotsMeta(out, CFG);
       var robotsState = withR === null ? 'nomark' : (withR === out ? 'same' : 'ok');
       var final = withR === null ? out : withR;
+
+      /* baseUrl 改过之后，首页的 canonical / og:image / JSON-LD 必须跟着重算，
+         否则它们会停在旧域名上。 */
+      var withS = B.injectHomeSeo(final, CFG, (window.SITE_CONTENT || {}).meta);
+      if (withS !== null) final = withS;
 
       if (final === html) return { cards: 'same', robots: robotsState };
       var w = await fh.createWritable();

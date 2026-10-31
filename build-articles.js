@@ -23,12 +23,32 @@ const path = require('path');
 global.window = global;
 require('./site.config.js');
 require('./article-builder.js');
+/* 首页的 og 文案和 title 同源，都取自 content.js，避免两处各写一遍 */
+try { require('./content.js'); } catch (e) {
+  console.warn('! content.js 读取失败，首页 og 文案将回退到 index.html 里的值');
+}
 
 const { loadArticles } = require('./articles-md.js');
 
 const B = global.SITEBuilder;
-const cfg = global.SITE_CONFIG || {};
 const posts = loadArticles();
+
+/* 绝对地址的唯一来源。Netlify 会在构建时注入 URL 环境变量，
+   所以预览部署的 canonical 会指向预览域名 —— 这正是想要的：
+   预览站本来就不该被索引，指向自己也比指向正式站诚实。 */
+function resolveBaseUrl(cfg) {
+  const fromEnv = (process.env.SITE_BASE_URL || process.env.URL || '').trim();
+  const raw = (fromEnv || cfg.baseUrl || '').trim().replace(/\/+$/, '');
+  if (!/^https?:\/\/[^/]+/.test(raw)) {
+    console.error('× baseUrl 不是合法的绝对地址：' + JSON.stringify(raw));
+    console.error('  canonical / sitemap / 分享卡片都会失效，先改 site.config.js 再构建。');
+    process.exit(1);
+  }
+  return raw;
+}
+
+const cfg = Object.assign({}, global.SITE_CONFIG || {});
+cfg.baseUrl = resolveBaseUrl(cfg);
 
 if (!B) {
   console.error('× 未能加载 article-builder.js');
@@ -78,9 +98,16 @@ if (fs.existsSync(indexPath)) {
   } else {
     out = withRobots;
   }
+  /* canonical + og/twitter 绝对地址 + JSON-LD：交给 builder 生成，别在这儿拼字符串 */
+  const withSeo = out === null ? null : B.injectHomeSeo(out, cfg, global.SITE_CONTENT && global.SITE_CONTENT.meta);
+  if (withSeo === null) {
+    console.warn('! index.html 里没有 <!-- SEO:START --> 标记，canonical 与分享卡片未更新');
+  } else {
+    out = withSeo;
+  }
   if (out !== null && out !== html) {
     fs.writeFileSync(indexPath, out, 'utf8');
-    console.log('  ✓ index.html 首页区块 / robots 已更新' +
+    console.log('  ✓ index.html 首页区块 / robots / SEO 头已更新' +
       (cfg.stage ? '（测试模式：禁止收录）' : ''));
   } else if (out !== null) {
     console.log('  · index.html 无变化');

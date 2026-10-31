@@ -8,11 +8,11 @@
 
 ## Key pages
 
-- [Home](https://www.seyecosmetic.com/): company overview, capabilities, certifications, enquiry form
-- [Insights](https://www.seyecosmetic.com/insights/): articles on manufacturing, quality control and sourcing
-- [Contact](https://www.seyecosmetic.com/#contact): enquiry form, WhatsApp +86 180 4077 7742, inquiry@seyecosmetic.com
+- [Home](https://seye-cosmetic-site.netlify.app/): company overview, capabilities, certifications, enquiry form
+- [Insights](https://seye-cosmetic-site.netlify.app/insights/): articles on manufacturing, quality control and sourcing
+- [Contact](https://seye-cosmetic-site.netlify.app/#contact): enquiry form, WhatsApp +86 180 4077 7742, inquiry@seyecosmetic.com
 
 ## Articles
 
-- [How to Choose a Skincare OEM Manufacturer: What to Verify Before You Sign](https://www.seyecosmetic.com/insights/how-to-choose-a-skincare-oem-manufacturer/): A practical checklist for vetting skincare OEM and ODM factories: licences, formula ownership, in-process QC, MOQ terms, packaging and export documentation.
-- [How to Read a Cosmetic Certificate of Analysis (and Spot a Fabricated One)](https://www.seyecosmetic.com/insights/reading-a-cosmetic-certificate-of-analysis/): What a cosmetic CoA must contain, which results buyers misread — pH, viscosity, microbiological limits — and how to tell a genuine report from a template.
+- [How to Choose a Skincare OEM Manufacturer: What to Verify Before You Sign](https://seye-cosmetic-site.netlify.app/insights/how-to-choose-a-skincare-oem-manufacturer/): A practical checklist for vetting skincare OEM and ODM factories: licences, formula ownership, in-process QC, MOQ terms, packaging and export documentation.
+- [How to Read a Cosmetic Certificate of Analysis (and Spot a Fabricated One)](https://seye-cosmetic-site.netlify.app/insights/reading-a-cosmetic-certificate-of-analysis/): What a cosmetic CoA must contain, which results buyers misread — pH, viscosity, microbiological limits — and how to tell a genuine report from a template.

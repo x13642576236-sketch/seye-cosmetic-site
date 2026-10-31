@@ -227,13 +227,14 @@
 
   /* ---------------- 组织信息（E-E-A-T / GEO 实体锚点） ---------------- */
   function orgLd(cfg) {
+    var base = String(cfg.baseUrl || '').replace(/\/+$/, '');
     return {
       '@type': 'Organization',
-      '@id': cfg.baseUrl + '/#organization',
+      '@id': base + '/#organization',
       name: 'SEYE Biomedical',
       alternateName: 'SEYE Biomedical Co., Ltd.',
-      url: cfg.baseUrl + '/',
-      logo: { '@type': 'ImageObject', url: cfg.baseUrl + '/assets/og-cover.jpg' },
+      url: base + '/',
+      logo: { '@type': 'ImageObject', url: base + '/assets/apple-touch-icon.png', width: 180, height: 180 },
       description: 'Guangzhou-based OEM, ODM and private-label skincare manufacturer with 80,000 m² of medical-grade production capacity.',
       address: {
         '@type': 'PostalAddress',
@@ -590,6 +591,98 @@
       '<!-- ROBOTS:START -->' + robotsMeta(cfg) + '<!-- ROBOTS:END -->');
   }
 
+  /* ---------------- 首页 head：canonical / 分享卡片 / JSON-LD ----------------
+     文章页的这套东西是 builder 自己拼的；首页是手写的，所以只能反过来
+     在标记区间里生成。绝对地址一律由 cfg.baseUrl 拼，避免"部署时再重写"
+     这种从来没实现过的承诺。
+
+     标题和描述仍以 index.html 里手写的那两行 <title>/<meta description> 为准，
+     这里只负责补上 canonical、把 og:image 变成绝对地址、加结构化数据。      */
+  var SEO_RE = /<!-- SEO:START -->[\s\S]*?<!-- SEO:END -->/;
+
+  function decodeEntities(s) {
+    return String(s || '')
+      .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+      .replace(/&amp;/g, '&');
+  }
+
+  function pageTitle(html) {
+    var m = /<title>([\s\S]*?)<\/title>/i.exec(html);
+    return m ? decodeEntities(m[1]).trim() : '';
+  }
+
+  function pageDescription(html) {
+    var m = /<meta\s+name=["']description["']\s+content=["']([^"']*)["']/i.exec(html);
+    return m ? decodeEntities(m[1]).trim() : '';
+  }
+
+  /* meta 参数来自 content.js 的 SITE_CONTENT.meta（ogTitle / ogDesc），
+     和首页文案共用同一份数据；缺省时退回 html 里的 title/description。 */
+  function buildHomeSeo(html, cfg, meta) {
+    meta = meta || {};
+    var base = String(cfg.baseUrl || '').replace(/\/+$/, '');
+    var site = cfg.siteName || 'SEYE Biomedical';
+    var title = (meta.title || pageTitle(html) || site).trim();
+    var desc = (meta.description || pageDescription(html) || '').trim();
+    var ogTitle = (meta.ogTitle || title).trim();
+    var ogDesc = (meta.ogDesc || desc).trim();
+    var image = base + '/assets/og-cover.jpg';
+
+    var graph = {
+      '@context': 'https://schema.org',
+      '@graph': [
+        orgLd(cfg),
+        {
+          '@type': 'WebSite',
+          '@id': base + '/#website',
+          url: base + '/',
+          name: site,
+          description: desc,
+          publisher: { '@id': base + '/#organization' },
+          inLanguage: 'en'
+        },
+        {
+          '@type': 'WebPage',
+          '@id': base + '/#webpage',
+          url: base + '/',
+          name: title,
+          description: desc,
+          isPartOf: { '@id': base + '/#website' },
+          about: { '@id': base + '/#organization' },
+          primaryImageOfPage: { '@type': 'ImageObject', url: image },
+          inLanguage: 'en'
+        }
+      ]
+    };
+
+    return [
+      '<link rel="canonical" href="' + attr(base + '/') + '">',
+      '<meta property="og:type" content="website">',
+      '<meta property="og:site_name" content="' + attr(site) + '">',
+      '<meta property="og:title" content="' + attr(ogTitle) + '">',
+      '<meta property="og:description" content="' + attr(ogDesc) + '">',
+      '<meta property="og:url" content="' + attr(base + '/') + '">',
+      '<meta property="og:image" content="' + attr(image) + '">',
+      '<meta property="og:image:width" content="1200">',
+      '<meta property="og:image:height" content="630">',
+      '<meta property="og:image:alt" content="' + attr(ogTitle) + '">',
+      '<meta property="og:locale" content="en_US">',
+      '<meta name="twitter:card" content="summary_large_image">',
+      '<meta name="twitter:title" content="' + attr(ogTitle) + '">',
+      '<meta name="twitter:description" content="' + attr(ogDesc) + '">',
+      '<meta name="twitter:image" content="' + attr(image) + '">',
+      '<script type="application/ld+json">\n' +
+        JSON.stringify(graph, null, 2) + '\n</script>'
+    ].map(function (l) { return l.indexOf('\n') === -1 ? '  ' + l : l; }).join('\n');
+  }
+
+  function injectHomeSeo(html, cfg, meta) {
+    if (!SEO_RE.test(html)) return null;
+    return html.replace(SEO_RE,
+      '<!-- SEO:START -->\n' + buildHomeSeo(html, cfg, meta) + '\n<!-- SEO:END -->');
+  }
+
   /* llms.txt —— 给 AI 抓取器的站点摘要，GEO 的实际抓手之一 */
   function buildLlms(posts, cfg) {
     var base = cfg.baseUrl.replace(/\/$/, '');
@@ -710,6 +803,7 @@
     buildSitemap: buildSitemap, buildRobots: buildRobots, buildLlms: buildLlms,
     buildFeed: buildFeed, buildHomeCards: buildHomeCards, injectHomeCards: injectHomeCards,
     robotsMeta: robotsMeta, injectRobotsMeta: injectRobotsMeta,
+    buildHomeSeo: buildHomeSeo, injectHomeSeo: injectHomeSeo, orgLd: orgLd,
     buildAll: buildAll, zip: zip, utf8: utf8
   };
 })(typeof window !== 'undefined' ? window : global);

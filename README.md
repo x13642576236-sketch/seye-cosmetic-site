@@ -16,9 +16,14 @@ dependencies, no framework — Node built-in modules and vanilla JS only.
 - **Directory-style URLs**: `insights/<slug>/index.html` serves as `/insights/<slug>/`.
   Article pages therefore reference assets as `../../assets/...`.
 - **Home page is hand-maintained.** The build only replaces what sits between
-  `<!-- ARTICLES:START --> ... <!-- ARTICLES:END -->` and `<!-- ROBOTS:START --> ... <!-- ROBOTS:END -->`.
+  `<!-- ARTICLES:START --> ... <!-- ARTICLES:END -->`, `<!-- ROBOTS:START --> ... <!-- ROBOTS:END -->`
+  and `<!-- SEO:START --> ... <!-- SEO:END -->`.
   If a marker is missing the injector returns `null` and the caller warns without writing —
   that is intentional, not a bug.
+- **Every absolute URL is derived from `SITE_CONFIG.baseUrl`.** Canonical, `og:url`, `og:image`,
+  sitemap, feed, `llms.txt` and the JSON-LD `@id`s are all generated from it at build time —
+  there is no "rewrite on deploy" step, because there never was. Change `baseUrl` (or set
+  `SITE_BASE_URL`) and rebuild; nothing else needs touching.
 - **Articles are markdown files, one per article.** `content/articles/<slug>.md` holds YAML
   frontmatter (title, SEO meta, cover, FAQ) plus a markdown body. `content/articles.js` is a
   **generated** mirror kept only so `admin.html` can preview offline — never edit it by hand,
@@ -40,6 +45,7 @@ would write into the generated mirror, and the next build would silently discard
 
 ```
 index.html              hand-written home page (7 sections)
+404.html                not-found page, served by Netlify with a 404 status
 admin.html              local tool: home-page copy editor (articles moved online)
 site.config.js          window.SITE_CONFIG — baseUrl + stage flag, single source
 content/articles/*.md   articles: YAML frontmatter + markdown body (source of truth)
@@ -66,7 +72,12 @@ node build-articles.js
 ```
 
 Regenerates the article pages, `insights/index.html`, `sitemap.xml`, `robots.txt`, `llms.txt`,
-`feed.xml`, and injects the article list + robots directive into `index.html`.
+`feed.xml`, and injects the article list + robots directive + canonical/OG/JSON-LD block into
+`index.html`.
+
+The base URL resolution order is `SITE_BASE_URL` → `URL` (injected by Netlify) → `baseUrl` in
+`site.config.js`. A build with an invalid absolute URL fails loudly instead of emitting a broken
+canonical.
 
 Requires Node 18+.
 
@@ -95,5 +106,11 @@ carries `noindex,nofollow`. Stage mode has to be switched off in all three layer
 robots, home page, article/list pages — otherwise you end up with the worse state of "home page
 not indexed but articles indexed".
 
-Canonical host in `SITE_CONFIG.baseUrl` is `https://www.seyecosmetic.com`. Publishing for real
-means: set `baseUrl`, set `stage: false`, then rebuild.
+Canonical host in `SITE_CONFIG.baseUrl` is `https://seye-cosmetic-site.netlify.app` — the address
+that actually resolves today. Pointing canonical at a domain that does not resolve yet tells
+Google the real page lives elsewhere and throws the ranking away; the real domain gets switched in
+when its DNS is live.
+
+Going live for real means two changes: set `baseUrl` to the production domain (or set the
+`SITE_BASE_URL` environment variable in Netlify), and set `stage: false`. Then rebuild — every
+absolute URL on the site follows automatically.
