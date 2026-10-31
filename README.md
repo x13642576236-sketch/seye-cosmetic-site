@@ -55,13 +55,18 @@ Requires Node 18+.
 Double-click `publish.bat`, or:
 
 ```bash
-node build-articles.js && git add -A && git commit -m "content: ..." && git push origin main
+node publish.js            # build, commit, push
+node publish.js --dry-run  # show what would be committed, touch nothing
 ```
 
-The script rebuilds, commits, pushes, and stops if `index.html` has been polluted by a visual
-editor (`data-page-node-id` attributes) or if the build fails. Netlify rebuilds from GitHub on
-every push to `main` — this is the only supported publishing path; `release.bat` (build + zip)
-is legacy from the manual-drag era.
+`publish.bat` is a thin wrapper around `publish.js`. The logic lives in Node because this
+machine has no system Git — `git.exe` only exists inside WorkBuddy's PortableGit, which is not
+on a plain `cmd` PATH, so the script probes `PATH` first and then falls back to the known
+install locations. It also stops if `index.html` has been polluted by a visual editor
+(`data-page-node-id` attributes) or if the build fails, so a broken build never reaches GitHub.
+
+Netlify rebuilds from GitHub on every push to `main`. `release.bat` (build + zip) is legacy from
+the manual-drag era and is no longer needed.
 
 ## Status
 
