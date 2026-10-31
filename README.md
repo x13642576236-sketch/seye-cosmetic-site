@@ -107,12 +107,28 @@ environment variables:
 | Variable | Purpose |
 |---|---|
 | `WEB3FORMS_KEY` | access key for the Web3Forms form; without it the function returns 503 instead of pretending to succeed |
+| `BRAND_NAME` | brand shown in the email subject (defaults to `SEYE`) |
 | `SITE_BASE_URL` | canonical host for absolute URLs |
 | `NODE_VERSION` | pins the build runtime |
 
 To change the receiving inbox, create a new key at web3forms.com under that address and replace
 `WEB3FORMS_KEY` — no code change. `functions/` must stay at the repo root, not inside `dist`;
 Cloudflare picks it up from there regardless of the build output directory.
+
+Three defences, and only two of them are reliable:
+
+| Defence | Status |
+|---|---|
+| Cross-origin rejection (browser posting from another site) | works — returns 403 |
+| Body size cap at 64 KB | works — returns 413 |
+| Per-IP throttle, 5 per 10 minutes | **best effort only** |
+
+The throttle counts in module memory, and a Pages Function runs in many isolates across many
+data centres; the counter is neither shared nor durable. Measured: seven consecutive
+submissions from one client did not trip it. It is kept because it costs nothing and does catch
+bursts that land on the same isolate, but do not count on it. The real fix when spam becomes a
+problem is Cloudflare Turnstile (add the widget to the form, verify the token in the function)
+or a KV-backed counter. Leave it out of the pitch rather than presenting it as protection.
 
 
 ## Publish
@@ -144,6 +160,46 @@ junction `C:\seye` → this directory.
 
 The host rebuilds from GitHub on every push to `main` — nothing else to do after `publish.js`.
 `release.bat` (build + zip) is legacy from the manual-drag era and is no longer needed.
+
+## Caching
+
+`_headers` (Cloudflare) and `netlify.toml` (Netlify) must stay in sync, and there is one trap
+worth knowing before you touch them.
+
+**Cloudflare Pages concatenates matching rules; it does not let the later one win.** If
+`/assets/fonts/*` and `/assets/*` both match, the response carries
+`max-age=604800, max-age=31536000, immutable` and the browser honours the first `max-age` —
+the long cache you just wrote never takes effect. The rule that actually applies is therefore:
+
+> Every file may match exactly one rule. Enforce exclusivity with directory structure, not
+> with rule order.
+
+That is why `fonts.css` lives in `assets/` while the `.woff2` binaries live in `assets/fonts/`:
+the directory is what separates "never changes" from "changes whenever the design does".
+
+Everything except the font binaries gets `max-age=0, must-revalidate`, because no asset
+filename carries a content hash. Long-caching them means a returning visitor can pair an old
+stylesheet with new markup and get a broken layout that never repairs itself. The cost is one
+304 round trip per asset. If you ever want the megabytes back, add content hashes to the
+filenames — that is the real fix, not a bigger `max-age`.
+
+## Rebranding / moving to another domain
+
+The copy hardcodes the brand name, so this is a command, not a hunt:
+
+```bash
+node tools/swap-brand.js --brand "ACME Biotech" --site acme.com           # preview
+node tools/swap-brand.js --brand "ACME Biotech" --site acme.com --apply   # write
+```
+
+It rewrites the long name, the short name and the host across pages, config, articles and
+`llms.txt` — about 96 occurrences today. It deliberately does **not** touch: contact details
+(email, phone, WhatsApp), the company narrative inside articles, or any image (factory floors
+and certificates are photographs of one specific company). Run `git diff` before publishing.
+
+After swapping, a new domain still needs: binding it in the host, updating the `SITE_BASE_URL`
+environment variable, re-issuing the Web3Forms access key if the inbox changes, and a
+`_redirects` map if any old URL must keep working.
 
 ## Status
 
