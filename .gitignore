@@ -1,4 +1,4 @@
-# 构建产物：Netlify 会用 node build-articles.js 自己生成，不需要进仓库
+# 构建产物：托管平台（Cloudflare Pages / Netlify）会自己跑构建生成，不需要进仓库
 dist/
 *.zip
 

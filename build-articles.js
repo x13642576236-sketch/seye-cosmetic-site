@@ -33,11 +33,19 @@ const { loadArticles } = require('./articles-md.js');
 const B = global.SITEBuilder;
 const posts = loadArticles();
 
-/* 绝对地址的唯一来源。Netlify 会在构建时注入 URL 环境变量，
-   所以预览部署的 canonical 会指向预览域名 —— 这正是想要的：
-   预览站本来就不该被索引，指向自己也比指向正式站诚实。 */
+/* 绝对地址的唯一来源。
+   优先级：SITE_BASE_URL > URL（Netlify 注入）> CF_PAGES_URL（Cloudflare 注入）> site.config.js
+
+   CF_PAGES_URL 在 Cloudflare 上给的是**本次部署**的地址，形如
+   https://1a2b3c4d.seye-cosmetic-site.pages.dev —— 每个提交都不一样。
+   拿它当 canonical 会让每次发布都换一个"真身"，所以要把它削成项目地址。
+   想完全可控，就在 Cloudflare 的构建环境变量里写死 SITE_BASE_URL。 */
 function resolveBaseUrl(cfg) {
-  const fromEnv = (process.env.SITE_BASE_URL || process.env.URL || '').trim();
+  let fromEnv = (process.env.SITE_BASE_URL || process.env.URL || '').trim();
+  if (!fromEnv && process.env.CF_PAGES_URL) {
+    fromEnv = process.env.CF_PAGES_URL.trim()
+      .replace(/^(https?:\/\/)[0-9a-z]{6,}\.(?=[^/]*\.pages\.dev)/i, '$1');
+  }
   const raw = (fromEnv || cfg.baseUrl || '').trim().replace(/\/+$/, '');
   if (!/^https?:\/\/[^/]+/.test(raw)) {
     console.error('× baseUrl 不是合法的绝对地址：' + JSON.stringify(raw));

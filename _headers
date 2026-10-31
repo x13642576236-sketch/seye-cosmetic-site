@@ -1,0 +1,24 @@
+# ============================================================
+# Cloudflare Pages 的响应头配置（构建产物根目录里放一个 _headers 就生效）
+# ------------------------------------------------------------
+# 这份文件和 netlify.toml 里的 [headers] 是等价的，两份并存：
+# 换托管不用改代码，哪个平台构建就读它自己认识的那份。
+#
+# 故意不给 /* 设 Cache-Control：
+#   HTML 让 Cloudflare 用默认的 max-age=0 + 协商缓存，发布后立刻可见；
+#   图片和字体按下面两条分别给长缓存。
+# 这样每条 Cache-Control 只由一条规则决定，不依赖规则顺序。
+# ============================================================
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+
+# 图片会被在线后台以同名覆盖上传，缓存留一周，避免换图后访客仍看到旧的。
+/assets/*
+  Cache-Control: public, max-age=604800
+
+# 字体文件名固定、内容不变，可以长缓存。
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable

@@ -28,12 +28,14 @@ const NO_ZIP = process.argv.includes('--no-zip');
 /* ---------- 白名单：dist 里只允许出现这些 ---------- */
 const FILES = [
   'index.html',
+  '404.html',
   'content.js',
   'cms.js',
   'sitemap.xml',
   'robots.txt',
   'llms.txt',
-  'feed.xml'
+  'feed.xml',
+  '_headers'
 ];
 const DIRS = [
   'insights',
@@ -220,9 +222,21 @@ const cfg = (function () {
   return global.SITE_CONFIG || {};
 })();
 
+/* 这里的域名是构建真正用的那个（环境变量优先），
+   不是 site.config.js 里写死的那个 —— 两者在托管平台上通常不一样。 */
+const shownBaseUrl = (function () {
+  let env = (process.env.SITE_BASE_URL || process.env.URL || '').trim();
+  if (!env && process.env.CF_PAGES_URL) {
+    env = process.env.CF_PAGES_URL.trim()
+      .replace(/^(https?:\/\/)[0-9a-z]{6,}\.(?=[^/]*\.pages\.dev)/i, '$1');
+  }
+  return (env || cfg.baseUrl || '').replace(/\/+$/, '');
+})();
+
 console.log('\n[4/4] 完成');
-console.log('  域名基准：' + (cfg.baseUrl || '(未设置)'));
+console.log('  域名基准：' + (shownBaseUrl || '(未设置)'));
 console.log('  收录状态：' + (cfg.stage
   ? '测试模式 — robots.txt 禁抓 + 全站 noindex，搜索引擎不会收录'
-  : '正式模式 — 允许收录，sitemap 已指向 ' + (cfg.baseUrl || '') + '/sitemap.xml'));
-console.log('\n  下一步：把 dist 文件夹拖进 Netlify 的 Deploys 页面即可上线。\n');
+  : '正式模式 — 允许收录，sitemap 已指向 ' + (shownBaseUrl || '') + '/sitemap.xml'));
+console.log('\n  下一步：commit + push。托管平台（Cloudflare Pages / Netlify）会自动跑\n' +
+  '          这个构建，不需要手动上传 dist。\n');
