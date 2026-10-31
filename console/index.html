@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEYE · 控制台</title>
+<style>
+  :root {
+    --paper: #FBFAF8;
+    --ink: #1A1714;
+    --muted: #8C837C;
+    --rule: #E3DCD3;
+    --accent: #B8542F;
+    --wash: #F5F1EC;
+    --serif: Georgia, "Times New Roman", "Songti SC", "SimSun", serif;
+    --sans: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: "SF Mono", "Cascadia Mono", Consolas, "Courier New", monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    padding: 56px 64px 96px;
+  }
+
+  .wrap { max-width: 1080px; margin: 0 auto; }
+
+  /* ---------- 页眉 ---------- */
+
+  header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .brand .name {
+    font-family: var(--serif);
+    font-size: 52px;
+    line-height: .92;
+    letter-spacing: .06em;
+    margin: 0;
+  }
+
+  .brand .sub {
+    font-size: 10px;
+    letter-spacing: .34em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 10px 0 0;
+  }
+
+  .head-right { text-align: right; }
+
+  .head-right .kicker {
+    font-size: 10px;
+    letter-spacing: .34em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .head-right .host {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink);
+    margin-top: 10px;
+  }
+
+  /* ---------- 状态条 ---------- */
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .stat {
+    padding: 30px 0 26px;
+    padding-right: 24px;
+  }
+
+  .stat + .stat {
+    padding-left: 32px;
+    border-left: 1px solid var(--rule);
+  }
+
+  .stat .value {
+    font-family: var(--serif);
+    font-size: 32px;
+    line-height: 1;
+    letter-spacing: -.01em;
+  }
+
+  .stat .value.small { font-size: 24px; }
+
+  .stat .label {
+    font-size: 10px;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 14px;
+  }
+
+  .stat .value .dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4C7A5B;
+    margin-right: 12px;
+    vertical-align: 3px;
+  }
+
+  .stat .value .dot.bad { background: var(--accent); }
+  .stat .value .dot.unknown { background: var(--muted); }
+
+  /* ---------- 入口列表 ---------- */
+
+  section { margin-top: 64px; }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 4px;
+    padding-bottom: 14px;
+  }
+
+  .rows { border-top: 1px solid var(--rule); }
+
+  .row {
+    display: grid;
+    grid-template-columns: 56px 1fr auto 28px;
+    align-items: center;
+    gap: 20px;
+    padding: 22px 8px 22px 0;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+    color: inherit;
+    background: none;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+    transition: background .15s ease;
+  }
+
+  .row:hover { background: var(--wash); }
+
+  .row .num {
+    font-family: var(--serif);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: .08em;
+    padding-left: 2px;
+    transition: color .15s ease;
+  }
+
+  .row:hover .num { color: var(--accent); }
+
+  .row .title {
+    font-size: 19px;
+    line-height: 1.35;
+  }
+
+  .row .title em {
+    font-style: normal;
+    color: var(--muted);
+    font-size: 13px;
+    margin-left: 14px;
+  }
+
+  .row .meta {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .row .arrow {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  .row:hover .arrow { color: var(--accent); }
+
+  /* ---------- 发布 ---------- */
+
+  .publish-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: end;
+    padding-top: 26px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .field input {
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid var(--ink);
+    background: transparent;
+    font-family: var(--sans);
+    font-size: 17px;
+    color: var(--ink);
+    padding: 6px 0 10px;
+    outline: none;
+  }
+
+  .field input::placeholder { color: #B9B0A8; }
+  .field input:focus { border-bottom-color: var(--accent); }
+
+  button.go {
+    border: 0;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    padding: 16px 34px;
+    cursor: pointer;
+    transition: background .15s ease, opacity .15s ease;
+  }
+
+  button.go:hover { background: var(--accent); }
+  button.go:disabled { opacity: .4; cursor: default; background: var(--ink); }
+
+  #log {
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.7;
+    color: #4A423C;
+    background: var(--wash);
+    padding: 20px 22px;
+    margin: 26px 0 0;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 260px;
+    overflow: auto;
+    border-left: 2px solid var(--rule);
+    display: none;
+  }
+
+  #log.show { display: block; }
+  #log.err { border-left-color: var(--accent); }
+
+  /* ---------- 页脚 ---------- */
+
+  footer {
+    margin-top: 72px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .04em;
+  }
+
+  footer .warn { color: var(--accent); }
+
+  @media (max-width: 880px) {
+    body { padding: 40px 26px 72px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .stat:nth-child(3) { padding-left: 0; border-left: 0; }
+    .stat:nth-child(3), .stat:nth-child(4) { border-top: 1px solid var(--rule); }
+    .stat:nth-child(4) { padding-left: 32px; border-left: 1px solid var(--rule); }
+    .row { grid-template-columns: 40px 1fr 20px; }
+    .row .meta { display: none; }
+    .brand .name { font-size: 38px; }
+    .publish-grid { grid-template-columns: 1fr; }
+    button.go { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <h1 class="name">SEYE</h1>
+      <p class="sub">Biomedical</p>
+    </div>
+    <div class="head-right">
+      <div class="kicker">Control Room</div>
+      <div class="host" id="host">seye-cosmetic-site.pages.dev</div>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="value small" id="s-site"><span class="dot unknown"></span>检查中</div>
+      <div class="label">线上状态</div>
+    </div>
+    <div class="stat">
+      <div class="value" id="s-dirty">–</div>
+      <div class="label">未发布改动</div>
+    </div>
+    <div class="stat">
+      <div class="value small" id="s-last">–</div>
+      <div class="label">最后发布</div>
+    </div>
+    <div class="stat">
+      <div class="value" id="s-articles">–</div>
+      <div class="label">已发布文章</div>
+    </div>
+  </div>
+
+  <section>
+    <p class="section-label">进入</p>
+    <div class="rows">
+      <a class="row" href="https://app.pagescms.org" target="_blank" rel="noopener">
+        <span class="num">01</span>
+        <span class="title">文章编辑<em>写稿、改稿、传图</em></span>
+        <span class="meta">app.pagescms.org</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="row" href="https://cloud.umami.is" target="_blank" rel="noopener">
+        <span class="num">02</span>
+        <span class="title">访问统计<em>访客、来源、页面</em></span>
+        <span class="meta">cloud.umami.is</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="row" href="https://dash.cloudflare.com/?to=/:account/pages" target="_blank" rel="noopener">
+        <span class="num">03</span>
+        <span class="title">部署记录<em>构建日志、回滚</em></span>
+        <span class="meta">dash.cloudflare.com</span>
+        <span class="arrow">↗</span>
+      </a>
+      <button class="row" id="open-editor">
+        <span class="num">04</span>
+        <span class="title">首页文案<em>本地编辑器，改完记得发布</em></span>
+        <span class="meta">admin.html</span>
+        <span class="arrow">↗</span>
+      </button>
+      <button class="row" id="open-folder">
+        <span class="num">05</span>
+        <span class="title">项目文件夹<em>源码、图片、文章原稿</em></span>
+        <span class="meta">seye-website</span>
+        <span class="arrow">↗</span>
+      </button>
+      <a class="row" href="https://github.com/x13642576236-sketch/seye-cosmetic-site" target="_blank" rel="noopener">
+        <span class="num">06</span>
+        <span class="title">代码仓库<em>历史版本，误删可从这儿找回</em></span>
+        <span class="meta">github.com</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="row" href="https://seye-cosmetic-site.pages.dev" target="_blank" rel="noopener">
+        <span class="num">07</span>
+        <span class="title">打开网站<em>线上实际效果</em></span>
+        <span class="meta">pages.dev</span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">发布</p>
+    <div class="publish-grid">
+      <div class="field">
+        <label for="msg">提交说明（可留空）</label>
+        <input id="msg" type="text" placeholder="例如：更新首页文案" autocomplete="off">
+      </div>
+      <button class="go" id="go">发布上线</button>
+    </div>
+    <pre id="log"></pre>
+  </section>
+
+  <footer>
+    <span id="foot-left">构建 → 提交 → 推送，Cloudflare 约一分钟内上线</span>
+    <span id="foot-right"></span>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>]/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c];
+  }); }
+
+  function render(st) {
+    var site = st.site || {};
+    var host = $('host');
+    if (site.url) host.textContent = site.url.replace(/^https?:\/\//, '');
+
+    var s = $('s-site');
+    if (site.ok) {
+      s.innerHTML = '<span class="dot"></span>正常';
+    } else if (site.status) {
+      s.innerHTML = '<span class="dot bad"></span>HTTP ' + site.status;
+    } else {
+      s.innerHTML = '<span class="dot bad"></span>打不开';
+    }
+
+    var dirty = st.git && st.git.dirty || 0;
+    $('s-dirty').textContent = dirty ? dirty : '0';
+    $('s-dirty').style.color = dirty ? 'var(--accent)' : 'var(--ink)';
+
+    $('s-last').textContent = (st.git && st.git.commit) ? st.git.commit.ago : '—';
+    $('s-last').title = (st.git && st.git.commit) ? st.git.commit.hash + ' ' + st.git.commit.subject : '';
+
+    $('s-articles').textContent = st.articles;
+
+    var right = [];
+    if (st.stage === true) right.push('<span class="warn">收录已关闭</span>');
+    if (st.git && st.git.ahead) right.push('本地领先远端 ' + st.git.ahead + ' 个提交');
+    if (st.git && !st.git.available) right.push('未找到 git');
+    $('foot-right').innerHTML = right.join(' · ');
+  }
+
+  function load() {
+    fetch('/api/status', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(render)
+      .catch(function () {
+        $('s-site').innerHTML = '<span class="dot unknown"></span>离线';
+      });
+  }
+
+  function post(url, body) {
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-console': '1' },
+      body: JSON.stringify(body || {})
+    }).then(function (r) { return r.json(); });
+  }
+
+  $('open-editor').addEventListener('click', function () { post('/api/open', { target: 'editor' }); });
+  $('open-folder').addEventListener('click', function () { post('/api/open', { target: 'folder' }); });
+
+  var btn = $('go');
+  var log = $('log');
+
+  function publish() {
+    btn.disabled = true;
+    btn.textContent = '发布中…';
+    log.className = 'show';
+    log.textContent = '构建中，别关这个页面…\n';
+
+    post('/api/publish', { message: $('msg').value.trim() })
+      .then(function (out) {
+        log.textContent = out.log || '(无输出)';
+        log.className = 'show' + (out.ok ? '' : ' err');
+        if (out.ok) $('msg').value = '';
+        load();
+      })
+      .catch(function (e) {
+        log.className = 'show err';
+        log.textContent = '请求失败：' + e.message;
+      })
+      .then(function () {
+        btn.disabled = false;
+        btn.textContent = '发布上线';
+      });
+  }
+
+  btn.addEventListener('click', publish);
+  $('msg').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); publish(); }
+  });
+
+  load();
+  setInterval(load, 30000);
+})();
+</script>
+</body>
+</html>

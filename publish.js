@@ -17,10 +17,16 @@ const readline = require('readline');
 
 const ROOT = __dirname;
 const DRY = process.argv.includes('--dry-run');
-const LIVE = 'https://seye-cosmetic-site.netlify.app';
+const LIVE = 'https://seye-cosmetic-site.pages.dev';
 
 function line(s) { console.log(s || ''); }
 function step(n, s) { line(`[${n}/4] ${s}`); }
+
+/* 控制台传进来的提交说明；不给就走交互提问 */
+function argValue(flag) {
+  const i = process.argv.indexOf(flag);
+  return i > -1 ? (process.argv[i + 1] || '').trim() : '';
+}
 
 /* ---------- 找 git ---------- */
 
@@ -128,7 +134,7 @@ async function main() {
   files.slice(0, 12).forEach((f) => line(`    · ${f}`));
   if (files.length > 12) line(`    · 还有 ${files.length - 12} 个`);
 
-  let msg = DRY ? 'dry-run' : await ask('提交说明（直接回车用默认）：');
+  let msg = DRY ? 'dry-run' : (argValue('--message') || await ask('提交说明（直接回车用默认）：'));
   if (!msg) msg = 'content: 更新站点内容';
 
   if (DRY) {
