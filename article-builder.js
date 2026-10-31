@@ -194,7 +194,7 @@
       '<meta name="twitter:title" content="' + attr(opts.title) + '">\n' +
       '<meta name="twitter:description" content="' + attr(opts.description) + '">\n' +
       (opts.image ? '<meta name="twitter:image" content="' + attr(opts.image) + '">\n' : '') +
-      '<link rel="stylesheet" href="' + p + 'assets/fonts/fonts.css">\n' +
+      '<link rel="stylesheet" href="' + p + 'assets/fonts.css">\n' +
       '<link rel="stylesheet" href="' + p + 'assets/insights.css">\n' +
       (opts.jsonld ? '<script type="application/ld+json">\n' + opts.jsonld + '\n</script>\n' : '') +
       (opts.analytics || '') +

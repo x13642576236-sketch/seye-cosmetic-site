@@ -108,21 +108,20 @@
 # ---------- 缓存 ----------
 # Netlify 按顺序匹配，最后的规则覆盖前面的 —— 所以更具体的路径要写在后面。
 # 图片会被在线后台以同名覆盖上传，缓存留短一点，避免换图后访客仍看到旧图。
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=604800"
-
-# 字体文件名固定、内容不变，可以长缓存。
+# 字体二进制：文件名固定、内容永不变，可以长缓存。
+# fonts.css 已移到 /assets/ 根目录，就是为了不落进这条规则。
 [[headers]]
   for = "/assets/fonts/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# HTML 不加长缓存：Netlify 默认给 max-age=0,must-revalidate，走协商缓存，发布后立刻可见。
+# 其余资源不设长缓存：文件名不带内容哈希，长缓存会导致改完样式/换完图
+# 回访用户仍看旧的。走协商缓存，几千字节的 304，换"发布即生效"。
+# 详见 _headers 顶部说明（Cloudflare 的多条规则会拼接而不是覆盖）。
 [[headers]]
   for = "/*"
   [headers.values]
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     X-Frame-Options = "SAMEORIGIN"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"

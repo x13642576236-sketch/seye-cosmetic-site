@@ -4,12 +4,21 @@
 # 这份文件和 netlify.toml 里的 [headers] 是等价的，两份并存：
 # 换托管不用改代码，哪个平台构建就读它自己认识的那份。
 #
-# 缓存策略分三层，核心原则只有一句：
-#   文件名不变的东西可以长缓存，会变的东西必须让浏览器回来问一句。
-# 这里所有文件名都不带内容哈希，所以 CSS 不能长缓存，否则改完样式
-# 回访用户会拿旧 CSS 配新 HTML，版式直接错乱。
+# ⚠️ 关键约束：Cloudflare Pages 命中多条规则时，是**把同名头的值拼接**
+#    而不是让后者覆盖前者。实测 /assets/fonts/* 同时命中 /assets/* 时，
+#    返回的是 "max-age=604800, max-age=31536000, immutable" —— 浏览器
+#    取第一个 max-age，长缓存就白设了。
+#    所以下面每条规则的路径必须互不包含，一个文件只能命中一条规则。
 #
-# 注意顺序：Cloudflare 多条规则命中时后者覆盖前者，所以"特例"写在最后。
+# 据此的分工（靠目录结构保证互斥，不靠规则顺序）：
+#   /assets/fonts/*   只有 woff2 字体二进制 → 内容永不变，锁一年
+#   /assets/*         其余资源 → 用 Pages 默认的 must-revalidate
+#
+# 为什么图片和 CSS 都走默认的 max-age=0：
+#   它们的文件名都不带内容哈希。给长缓存，改完样式或换完图，
+#   回访用户会拿旧文件配新页面，版式错乱且无法自愈。
+#   代价只是每次多一次 304 协商（几十毫秒），换来"发布即生效"。
+#   真正的解法是给文件名加内容哈希，那是下一步的事。
 # ============================================================
 
 /*
@@ -18,24 +27,7 @@
   X-Frame-Options: SAMEORIGIN
   Permissions-Policy: geolocation=(), microphone=(), camera=()
 
-# HTML 不在这里设 Cache-Control：Cloudflare Pages 默认给
-# max-age=0 + must-revalidate，发布后立刻可见，正好是想要的。
-
-# 图片：文件名固定、被在线后台以同名覆盖上传，留一周避免换图后访客仍看旧图
-/assets/*
-  Cache-Control: public, max-age=604800
-
-# 字体二进制：内容永不变化，锁一年
+# 字体二进制：文件名固定、内容永不变化，锁一年完全安全。
+# fonts.css 已从 fonts/ 移到 assets/ 根目录，就是为了不落进这条规则里。
 /assets/fonts/*
   Cache-Control: public, max-age=31536000, immutable
-
-# --- 以下是"会变"的文件，必须覆盖掉上面两条通配规则 ---
-
-# fonts.css 虽然放在 fonts/ 目录里，但它是样式表、会跟着字体一起改，
-# 不加这条会被上面的 immutable 锁死一年，等于永远改不了字体。
-/assets/fonts/fonts.css
-  Cache-Control: public, max-age=0, must-revalidate
-
-# 文章样式，改版频率高于图片
-/assets/insights.css
-  Cache-Control: public, max-age=0, must-revalidate
