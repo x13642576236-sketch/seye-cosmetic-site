@@ -50,6 +50,19 @@ Regenerates the article pages, `insights/index.html`, `sitemap.xml`, `robots.txt
 
 Requires Node 18+.
 
+## Publish
+
+Double-click `publish.bat`, or:
+
+```bash
+node build-articles.js && git add -A && git commit -m "content: ..." && git push origin main
+```
+
+The script rebuilds, commits, pushes, and stops if `index.html` has been polluted by a visual
+editor (`data-page-node-id` attributes) or if the build fails. Netlify rebuilds from GitHub on
+every push to `main` — this is the only supported publishing path; `release.bat` (build + zip)
+is legacy from the manual-drag era.
+
 ## Status
 
 `SITE_CONFIG.stage` is currently `true`: `robots.txt` disallows everything and every page
