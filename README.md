@@ -56,6 +56,7 @@ articles-md.js          frontmatter parser + markdown writer (no dependencies)
 article-builder.js      generator core
 build-articles.js       Node build script
 publish.bat / .js       build + commit + push
+functions/api/enquiry.js  Pages Function: enquiry form → Web3Forms email
 _headers                Cloudflare Pages: caching + security response headers
 netlify.toml            legacy: same rules for Netlify, ignored by Cloudflare
 .pages.yml              Pages CMS schema for online authoring
@@ -80,7 +81,9 @@ The base URL resolution order is `SITE_BASE_URL` → `URL` (Netlify) → `CF_PAG
 with the per-deploy hash stripped off) → `baseUrl` in `site.config.js`. A build with an invalid
 absolute URL fails loudly instead of emitting a broken canonical.
 
-There are two build paths, and they must not be confused:/n/n```bash
+There are two build paths, and they must not be confused:
+
+```bash
 node build-articles.js        # regenerate pages in place (local preview, publish.js)
 node release.js --no-zip      # the above, then rebuild dist/ from a whitelist → what CI deploys
 ```
@@ -90,6 +93,26 @@ whitelisted output is what keeps `admin.html`, `content/` and the build scripts 
 site — there are no block rules to maintain.
 
 Requires Node 18+.
+
+## Enquiry form
+
+The contact form posts to `/api/enquiry`, a Pages Function (`functions/api/enquiry.js`) that
+validates the fields and forwards them to Web3Forms, which sends the email. Netlify Forms is gone —
+it does not exist on Cloudflare, where a plain `POST /` returns 405.
+
+Web3Forms' access key is **not** in this repository (it is public). It lives in the host's build
+environment variables:
+
+| Variable | Purpose |
+|---|---|
+| `WEB3FORMS_KEY` | access key for the Web3Forms form; without it the function returns 503 instead of pretending to succeed |
+| `SITE_BASE_URL` | canonical host for absolute URLs |
+| `NODE_VERSION` | pins the build runtime |
+
+To change the receiving inbox, create a new key at web3forms.com under that address and replace
+`WEB3FORMS_KEY` — no code change. `functions/` must stay at the repo root, not inside `dist`;
+Cloudflare picks it up from there regardless of the build output directory.
+
 
 ## Publish
 
