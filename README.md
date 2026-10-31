@@ -56,6 +56,7 @@ articles-md.js          frontmatter parser + markdown writer (no dependencies)
 article-builder.js      generator core
 build-articles.js       Node build script
 publish.bat / .js       build + commit + push
+console.bat / console/  local control room: status, entry points, publish button
 functions/api/enquiry.js  Pages Function: enquiry form → Web3Forms email
 _headers                Cloudflare Pages: caching + security response headers
 netlify.toml            legacy: same rules for Netlify, ignored by Cloudflare
@@ -116,7 +117,12 @@ Cloudflare picks it up from there regardless of the build output directory.
 
 ## Publish
 
-Double-click `publish.bat`, or:
+Double-click `console.bat` for the control room — it starts a local server on 127.0.0.1 (first free
+port from 4477), opens the page, and gives you one screen with the site status, the entry points
+(Pages CMS, Umami, Cloudflare, the local editor, the repo) and a real publish button. Nothing is
+exposed to the network; closing the console window stops it.
+
+Or from a terminal:
 
 ```bash
 node publish.js            # build, commit, push
