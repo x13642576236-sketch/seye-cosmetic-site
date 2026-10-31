@@ -2,18 +2,18 @@
 /* ============================================================
    SEYE · 文章构建脚本
    ------------------------------------------------------------
-   把 content/articles.js 里的文章生成为静态文件：
+   把 content/articles/*.md 里的文章生成为静态文件：
      insights/index.html
      insights/<slug>/index.html
-     sitemap.xml  robots.txt  llms.txt
+     sitemap.xml  robots.txt  llms.txt  feed.xml
 
    两个使用场景：
-   1) 本地：node build-articles.js（或直接双击 build-articles.bat）
-   2) Netlify：仓库里的构建命令设为 node build-articles.js
-      这样在 Pages CMS / Decap 里点发布，Netlify 自动重新生成页面。
+   1) 本地：node build-articles.js（或双击 publish.bat）
+   2) Netlify：项目里的构建命令就是 node build-articles.js
+      在线后台（Pages CMS）每次保存都提交一个 md，Netlify 自动重新生成。
 
-   浏览器里也能生成同样的结果（admin.html 用的是同一个 article-builder.js），
-   这条命令只是让 CI 和本地各有一条不依赖界面的路。
+   文章的事实来源是 md 文件。content/articles.js 是同名数据的**生成产物**，
+   只是留给本地 admin.html 做离线预览用，不要手改 —— 每次构建都会覆盖。
    ============================================================ */
 'use strict';
 
@@ -21,19 +21,33 @@ const fs = require('fs');
 const path = require('path');
 
 global.window = global;
-require('./content/articles.js');
+require('./site.config.js');
 require('./article-builder.js');
 
+const { loadArticles } = require('./articles-md.js');
+
 const B = global.SITEBuilder;
-const posts = global.SITE_ARTICLES || [];
 const cfg = global.SITE_CONFIG || {};
+const posts = loadArticles();
 
 if (!B) {
   console.error('× 未能加载 article-builder.js');
   process.exit(1);
 }
 if (!posts.length) {
-  console.warn('! 没有任何文章，只会生成空的列表页');
+  console.warn('! content/articles/ 里没有 md 文件，只会生成空的列表页');
+}
+
+/* 给本地后台用的数据镜像，内容固定、顺序固定，重复构建不会产生 diff */
+const mirrorPath = path.join(__dirname, 'content', 'articles.js');
+const mirror = '/* 自动生成，请勿手改。\n' +
+  '   文章的事实来源是 content/articles/*.md（在线后台 Pages CMS 编辑的就是它们）。\n' +
+  '   这里只是给 admin.html 的离线预览用的镜像，每次构建都会覆盖。 */\n' +
+  'window.SITE_ARTICLES = ' + JSON.stringify(posts, null, 2) + ';\n';
+if (!fs.existsSync(mirrorPath) || fs.readFileSync(mirrorPath, 'utf8') !== mirror) {
+  fs.mkdirSync(path.dirname(mirrorPath), { recursive: true });
+  fs.writeFileSync(mirrorPath, mirror, 'utf8');
+  console.log('  ✓ content/articles.js 镜像已更新（' + posts.length + ' 篇文章）');
 }
 
 const files = B.buildAll(posts, cfg);

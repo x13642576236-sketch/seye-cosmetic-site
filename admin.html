@@ -123,12 +123,20 @@ body{margin:0;background:var(--cream2);color:var(--ink);font-family:var(--sans);
     <div class="bar__sp"></div>
     <span class="status" id="status">已载入</span>
     <button class="btn" type="button" id="openSite">打开网站</button>
-    <button class="btn btn--solid" type="button" id="primaryAction">发布</button>
+    <button class="btn" type="button" id="primaryAction" disabled>文章改到线上后台</button>
   </div>
 </header>
 
 <!-- ================= 文章 ================= -->
 <div class="view on" id="view-articles">
+  <div class="wrap" style="max-width:1180px;padding-top:16px">
+    <p style="margin:0 0 2px;font-size:13px;line-height:1.65;color:#8A5A1F;background:#FBF3E6;border:1px solid #E6D3AE;border-radius:9px;padding:11px 14px">
+      <b>文章已经搬到线上后台。</b>现在写文章、传封面图请到
+      <a href="https://app.pagescms.org" target="_blank" rel="noopener" style="color:#8A5A1F">app.pagescms.org</a>，
+      保存即提交，Netlify 一分钟内自动上线。本页的文章列表只是离线预览，
+      在这里改不会生效（会被下一次构建覆盖）；「首页文案」标签仍然可用。
+    </p>
+  </div>
   <div class="wrap grid2">
     <nav class="side">
       <p>文章列表</p>
@@ -151,6 +159,7 @@ body{margin:0;background:var(--cream2);color:var(--ink);font-family:var(--sans);
 
 <script src="content.js"></script>
 <script src="cms.js"></script>
+<script src="site.config.js"></script>
 <script src="content/articles.js"></script>
 <script src="article-builder.js"></script>
 <script>
@@ -759,8 +768,17 @@ body{margin:0;background:var(--cream2);color:var(--ink);font-family:var(--sans);
     });
     document.getElementById('view-articles').classList.toggle('on', v === 'articles');
     document.getElementById('view-content').classList.toggle('on', v === 'content');
-    primaryBtn.textContent = v === 'articles' ? '发布' : '保存';
-    primaryBtn.className = 'btn ' + (v === 'articles' ? 'btn--solid' : 'btn--solid');
+    /* 文章的事实来源已经是 content/articles/*.md。
+       这里写的是构建产物镜像，写进去也会被下次构建覆盖，所以直接禁掉发布。 */
+    if (v === 'articles') {
+      primaryBtn.textContent = '文章改到线上后台';
+      primaryBtn.disabled = true;
+      primaryBtn.className = 'btn';
+    } else {
+      primaryBtn.textContent = '保存';
+      primaryBtn.disabled = false;
+      primaryBtn.className = 'btn btn--solid';
+    }
 
     if (v === 'content' && !cBuilt) {
       var draft = null;
@@ -775,6 +793,7 @@ body{margin:0;background:var(--cream2);color:var(--ink);font-family:var(--sans);
   });
 
   primaryBtn.addEventListener('click', function () {
+    if (primaryBtn.disabled) return;
     if (view === 'articles') publish(); else saveContent();
   });
 

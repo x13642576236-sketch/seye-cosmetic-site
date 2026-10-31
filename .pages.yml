@@ -1,0 +1,99 @@
+# Pages CMS 配置 —— 在线后台（app.pagescms.org）读这个文件
+# 文章的事实来源是 content/articles/*.md，每次保存 = 一次 commit，
+# Netlify 收到后自动重新构建，一分钟内上线。
+
+media:
+  input: assets/uploads
+  output: /assets/uploads
+  rename: safe
+  categories: [image]
+
+content:
+  - name: articles
+    label: 文章（Insights）
+    type: collection
+    path: content/articles
+    filename: "{fields.slug}.md"
+    view:
+      primary: title
+      fields: [title, date, category]
+      sort: date
+      order: desc
+    fields:
+      - name: title
+        label: 标题
+        type: string
+        required: true
+
+      - name: slug
+        label: URL（英文小写，用连字符）
+        type: string
+        required: true
+        pattern: "^[a-z0-9-]+$"
+        description: 决定文章地址 /insights/<slug>/，发布后不要再改，旧地址会 404
+
+      - name: metaTitle
+        label: 浏览器标签标题（SEO）
+        type: string
+        description: 留空则用标题。建议 60 字以内
+
+      - name: description
+        label: 搜索结果摘要（SEO）
+        type: text
+        description: 给 Google 和 AI 看的一句话，建议 150–160 字符
+
+      - name: excerpt
+        label: 列表页摘要
+        type: text
+        description: 显示在文章列表卡片上，一到两句话
+
+      - name: category
+        label: 分类
+        type: select
+        options:
+          values: [Sourcing, Quality, Manufacturing, Packaging, Compliance]
+
+      - name: keywords
+        label: 关键词
+        type: string
+        list: true
+
+      - name: date
+        label: 发布日期
+        type: date
+
+      - name: updated
+        label: 更新日期
+        type: date
+
+      - name: author
+        label: 作者
+        type: string
+
+      - name: cover
+        label: 封面图
+        type: image
+        description: 会用在文章页顶部、列表卡片和社交分享卡片（1200×630 最好）
+
+      - name: coverAlt
+        label: 封面图说明
+        type: string
+        description: 图片内容的客观描述，无障碍和 SEO 都用得上
+
+      - name: faq
+        label: 常见问题
+        type: object
+        list:
+          collapsible: true
+          summary: "{q}"
+        fields:
+          - name: q
+            label: 问题
+            type: string
+          - name: a
+            label: 回答
+            type: text
+
+      - name: body
+        label: 正文
+        type: rich-text

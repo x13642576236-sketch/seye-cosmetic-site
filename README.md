@@ -19,24 +19,44 @@ dependencies, no framework — Node built-in modules and vanilla JS only.
   `<!-- ARTICLES:START --> ... <!-- ARTICLES:END -->` and `<!-- ROBOTS:START --> ... <!-- ROBOTS:END -->`.
   If a marker is missing the injector returns `null` and the caller warns without writing —
   that is intentional, not a bug.
-- **`article-builder.js` is isomorphic** — the same file runs in the browser admin panel and in
+- **Articles are markdown files, one per article.** `content/articles/<slug>.md` holds YAML
+  frontmatter (title, SEO meta, cover, FAQ) plus a markdown body. `content/articles.js` is a
+  **generated** mirror kept only so `admin.html` can preview offline — never edit it by hand,
+  every build overwrites it.
+- **`article-builder.js` is isomorphic** — the same file runs in the browser preview and in
   Node during CI. Do not add logic for one side only, or the preview and the deployed output drift.
+
+## Write
+
+Online authoring runs on [Pages CMS](https://app.pagescms.org), configured by `.pages.yml`.
+Sign in with GitHub, pick this repository, and the "文章（Insights）" collection gives you a form
+for the metadata, a rich-text body, and image uploads that land in `assets/uploads/`. Saving
+commits a markdown file; Netlify rebuilds.
+
+`admin.html` still works for the home-page copy. Its article tab is read-only on purpose — it
+would write into the generated mirror, and the next build would silently discard it.
 
 ## Layout
 
 ```
 index.html              hand-written home page (7 sections)
-admin.html              local authoring UI — not part of the deployed output
+admin.html              local tool: home-page copy editor (articles moved online)
+site.config.js          window.SITE_CONFIG — baseUrl + stage flag, single source
+content/articles/*.md   articles: YAML frontmatter + markdown body (source of truth)
+content/articles.js     generated mirror of the above, for admin.html offline preview
 content.js              home page copy (window.SITE_CONTENT)
 cms.js                  applies SITE_SCHEMA + content.js to the home page DOM
-content/articles.js     all article data (window.SITE_ARTICLES + window.SITE_CONFIG)
-article-builder.js      generator core, shared by browser and Node
+articles-md.js          frontmatter parser + markdown writer (no dependencies)
+article-builder.js      generator core
 build-articles.js       Node build script
-release.js / .bat       build + rebuild dist/ + zip
+publish.bat / .js       build + commit + push
+netlify.toml            build command, publish dir, blocks internal files
+.pages.yml              Pages CMS schema for online authoring
 assets/                 images, self-hosted woff2 fonts, insights.css
+assets/uploads/         images uploaded from Pages CMS land here
 insights/               generated: article index + one directory per article
 sitemap.xml robots.txt llms.txt feed.xml   generated
-tools/                  chat export + handover packaging helpers
+tools/                  chat export, handover packaging, one-off md migration
 ```
 
 ## Build
