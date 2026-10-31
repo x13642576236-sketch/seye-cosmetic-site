@@ -105,9 +105,16 @@ if (fs.existsSync(indexPath)) {
   } else {
     out = withSeo;
   }
+  /* 访问统计：site.config.js 里的 analytics 留空时不输出任何脚本 */
+  const withStats = out === null ? null : B.injectAnalytics(out, cfg);
+  if (withStats === null) {
+    console.warn('! index.html 里没有 <!-- ANALYTICS:START --> 标记，统计脚本未注入');
+  } else {
+    out = withStats;
+  }
   if (out !== null && out !== html) {
     fs.writeFileSync(indexPath, out, 'utf8');
-    console.log('  ✓ index.html 首页区块 / robots / SEO 头已更新' +
+    console.log('  ✓ index.html 首页区块 / robots / SEO 头 / 统计 已更新' +
       (cfg.stage ? '（测试模式：禁止收录）' : ''));
   } else if (out !== null) {
     console.log('  · index.html 无变化');

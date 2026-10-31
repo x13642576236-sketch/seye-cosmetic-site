@@ -23,5 +23,22 @@
 window.SITE_CONFIG = {
   baseUrl: 'https://seye-cosmetic-site.netlify.app',
   siteName: 'SEYE Biomedical',
-  stage: true
+  stage: true,
+
+  /* ---------------- 访问统计 ----------------
+     provider: 'umami' | 'plausible' | ''（空字符串 = 关闭）
+
+     umami：cloud.umami.is 注册 → Add website → 复制 Website ID（一串 UUID）
+     填到 umamiWebsiteId 后跑一次构建，统计脚本会同时出现在首页和所有文章页。
+     它是无 cookie 的，欧盟访客不需要同意弹窗，也不影响页面加载速度（defer）。
+
+     umamiWebsiteId 为空时构建不输出任何脚本，等于没装 —— 所以可以先把
+     管道放这儿，等 ID 拿到再填。
+  ------------------------------------------------ */
+  analytics: {
+    provider: 'umami',
+    umamiWebsiteId: '',
+    umamiScript: 'https://cloud.umami.is/script.js',
+    plausibleDomain: ''
+  }
 };

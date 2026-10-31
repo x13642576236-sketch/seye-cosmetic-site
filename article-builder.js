@@ -197,6 +197,7 @@
       '<link rel="stylesheet" href="' + p + 'assets/fonts/fonts.css">\n' +
       '<link rel="stylesheet" href="' + p + 'assets/insights.css">\n' +
       (opts.jsonld ? '<script type="application/ld+json">\n' + opts.jsonld + '\n</script>\n' : '') +
+      (opts.analytics || '') +
       '</head>\n';
   }
 
@@ -317,6 +318,7 @@
 
     var h = head({
       prefix: prefix,
+      analytics: analyticsTag(cfg),
       title: post.metaTitle || (post.title + ' — SEYE Biomedical'),
       description: post.description,
       keywords: (post.keywords || []).join(', '),
@@ -453,6 +455,7 @@
 
     return head({
       prefix: prefix,
+      analytics: analyticsTag(cfg),
       title: 'Insights — Skincare OEM, ODM & Private Label | SEYE Biomedical',
       description: 'Practical guidance on skincare manufacturing: choosing a manufacturer, QC checkpoints, MOQs, packaging and export documentation for brands worldwide.',
       canonical: url,
@@ -615,6 +618,30 @@
   function pageDescription(html) {
     var m = /<meta\s+name=["']description["']\s+content=["']([^"']*)["']/i.exec(html);
     return m ? decodeEntities(m[1]).trim() : '';
+  }
+
+  /* ---------------- 访问统计 ----------------
+     配置为空时返回空串 —— 页面不会多一个请求，等于没装。
+     defer 保证不阻塞首屏解析。 */
+  var ANALYTICS_RE = /<!-- ANALYTICS:START -->[\s\S]*?<!-- ANALYTICS:END -->/;
+
+  function analyticsTag(cfg) {
+    var a = (cfg && cfg.analytics) || {};
+    if (a.provider === 'umami' && a.umamiWebsiteId) {
+      return '<script defer src="' + attr(a.umamiScript || 'https://cloud.umami.is/script.js') +
+        '" data-website-id="' + attr(a.umamiWebsiteId) + '"></script>\n';
+    }
+    if (a.provider === 'plausible' && a.plausibleDomain) {
+      return '<script defer data-domain="' + attr(a.plausibleDomain) +
+        '" src="https://plausible.io/js/script.js"></script>\n';
+    }
+    return '';
+  }
+
+  function injectAnalytics(html, cfg) {
+    if (!ANALYTICS_RE.test(html)) return null;
+    return html.replace(ANALYTICS_RE,
+      '<!-- ANALYTICS:START -->' + analyticsTag(cfg) + '<!-- ANALYTICS:END -->');
   }
 
   /* meta 参数来自 content.js 的 SITE_CONTENT.meta（ogTitle / ogDesc），
@@ -804,6 +831,7 @@
     buildFeed: buildFeed, buildHomeCards: buildHomeCards, injectHomeCards: injectHomeCards,
     robotsMeta: robotsMeta, injectRobotsMeta: injectRobotsMeta,
     buildHomeSeo: buildHomeSeo, injectHomeSeo: injectHomeSeo, orgLd: orgLd,
+    analyticsTag: analyticsTag, injectAnalytics: injectAnalytics,
     buildAll: buildAll, zip: zip, utf8: utf8
   };
 })(typeof window !== 'undefined' ? window : global);
