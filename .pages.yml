@@ -1,6 +1,6 @@
 # Pages CMS 配置 —— 在线后台（app.pagescms.org）读这个文件
 # 文章的事实来源是 content/articles/*.md，每次保存 = 一次 commit，
-# Netlify 收到后自动重新构建，一分钟内上线。
+# Cloudflare Pages 收到后自动重新构建，一分钟内上线。
 
 media:
   input: assets/uploads
