@@ -117,8 +117,8 @@ body{margin:0;background:var(--cream2);color:var(--ink);font-family:var(--sans);
   <div class="bar__in">
     <div class="mark"><span class="mark__dot"></span><b>SEYE</b></div>
     <div class="tabs" role="tablist">
-      <button type="button" data-view="articles" class="on">文章</button>
-      <button type="button" data-view="content">首页文案</button>
+      <button type="button" data-view="content" class="on">首页文案</button>
+      <button type="button" data-view="articles">文章</button>
     </div>
     <div class="bar__sp"></div>
     <span class="status" id="status">已载入</span>
@@ -128,12 +128,12 @@ body{margin:0;background:var(--cream2);color:var(--ink);font-family:var(--sans);
 </header>
 
 <!-- ================= 文章 ================= -->
-<div class="view on" id="view-articles">
+<div class="view" id="view-articles">
   <div class="wrap" style="max-width:1180px;padding-top:16px">
     <p style="margin:0 0 2px;font-size:13px;line-height:1.65;color:#8A5A1F;background:#FBF3E6;border:1px solid #E6D3AE;border-radius:9px;padding:11px 14px">
       <b>文章已经搬到线上后台。</b>现在写文章、传封面图请到
       <a href="https://app.pagescms.org" target="_blank" rel="noopener" style="color:#8A5A1F">app.pagescms.org</a>，
-      保存即提交，Netlify 一分钟内自动上线。本页的文章列表只是离线预览，
+      保存即提交，Cloudflare Pages 一分钟内自动上线。本页的文章列表只是离线预览，
       在这里改不会生效（会被下一次构建覆盖）；「首页文案」标签仍然可用。
     </p>
   </div>
@@ -150,7 +150,7 @@ body{margin:0;background:var(--cream2);color:var(--ink);font-family:var(--sans);
 </div>
 
 <!-- ================= 首页文案 ================= -->
-<div class="view" id="view-content">
+<div class="view on" id="view-content">
   <div class="wrap grid2">
     <nav class="side" id="nav"><p>板块</p></nav>
     <main class="main" id="contentForm"></main>
@@ -819,6 +819,9 @@ body{margin:0;background:var(--cream2);color:var(--ink);font-family:var(--sans);
     renderList(); renderEditor();
     setStatus('已载入 ' + POSTS.length + ' 篇文章');
   }
+
+  /* 文章编辑已经搬到线上后台，打开就落在还能用的那一页 */
+  switchView(window.location.hash === '#articles' ? 'articles' : 'content');
 })();
 </script>
 </body>
