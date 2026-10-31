@@ -52,7 +52,7 @@ def main(out):
 
     # 交接文档和对话记录放在包根，优先看到
     extras = []
-    for name in ('HANDOVER.md', '对话记录.md', '从这里开始.md'):
+    for name in ('一个文件搞定.md', 'HANDOVER.md', '对话记录.md', '从这里开始.md'):
         p = os.path.join(ROOT, '迁移包', name)
         if os.path.exists(p):
             extras.append((p, TOP + '/' + name))
