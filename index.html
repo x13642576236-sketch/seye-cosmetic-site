@@ -810,15 +810,11 @@ form.cta-form{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:
       </dl>
     </div>
 
-    <!-- Netlify Forms: the pair (name + data-netlify) is what the build scanner looks for.
-         Set the same name in Site settings → Forms → project-brief, then enable Form detection
-         BEFORE redeploying, otherwise submissions are silently discarded. -->
+    <!-- 询盘表单 → /api/enquiry（Pages Function，源码在 functions/api/enquiry.js）
+         收件邮箱存在 Cloudflare 的环境变量 ENQUIRY_TO 里，不进公开仓库。
+         保留 action 是为了没开 JS 时也能提交，正常路径走下面的 fetch。 -->
     <form class="cta-form reveal" style="--d:.1s" id="briefForm"
-          name="project-brief" method="POST" data-netlify="true"
-          data-netlify-honeypot="bot-field" novalidate>
-      <!-- No manual form-name input: this is static HTML, so Netlify's build step
-           strips data-netlify and injects the hidden form-name itself. Adding one here
-           would send the field twice. -->
+          name="project-brief" method="POST" action="/api/enquiry" novalidate>
       <p hidden><label>Leave this field empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
 
       <div class="field">
@@ -1004,12 +1000,11 @@ document.querySelectorAll('.reveal').forEach((el, i) => {
   io.observe(el);
 });
 
-/* ---------- enquiry form → Netlify Forms ----------
-   Posts URL-encoded to the site root, which is where Netlify listens for
-   submissions of a detected form. JSON bodies are NOT supported.
-   Swapping to Formspree / Cloudflare later = change `endpoint` only.        */
+/* ---------- enquiry form → /api/enquiry ----------
+   发到 Pages Function（functions/api/enquiry.js），由它转发邮件。
+   这里只认 JSON 里的 ok 字段，第三方换成谁都只改那一个文件。        */
 const briefForm = document.getElementById('briefForm');
-const FORM_ENDPOINT = '/';
+const FORM_ENDPOINT = '/api/enquiry';
 
 briefForm.addEventListener('submit', async (ev) => {
   ev.preventDefault();
@@ -1023,10 +1018,12 @@ briefForm.addEventListener('submit', async (ev) => {
   try {
     const res = await fetch(FORM_ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(new FormData(briefForm)).toString(),
+      body: new FormData(briefForm),
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    /* 函数返回 JSON；解析失败或 ok 不为 true 都按失败处理 */
+    let out = null;
+    try { out = await res.json(); } catch (e) { /* 非 JSON 响应 */ }
+    if (!res.ok || !out || !out.ok) throw new Error((out && out.error) || ('HTTP ' + res.status));
 
     briefForm.replaceChildren(Object.assign(document.createElement('p'), {
       className: 'form-done',
