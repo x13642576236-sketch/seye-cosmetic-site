@@ -37,7 +37,7 @@ window.SITE_CONFIG = {
   ------------------------------------------------ */
   analytics: {
     provider: 'umami',
-    umamiWebsiteId: '',
+    umamiWebsiteId: 'bd986006-faf9-4f64-94bd-0ee7d508c644',
     umamiScript: 'https://cloud.umami.is/script.js',
     plausibleDomain: ''
   }
