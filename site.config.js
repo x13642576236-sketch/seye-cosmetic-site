@@ -9,8 +9,9 @@
    一个打不开的域名，等于告诉 Google "真身在别处"，权重直接丢掉。
    正式域名解析好之后再改成 https://www.seyecosmetic.com。
 
-   不想改代码也行：构建时读环境变量 SITE_BASE_URL（其次是 Netlify
-   自动注入的 URL）。优先级：SITE_BASE_URL > URL > 这里的 baseUrl。
+   不想改代码也行：构建时读环境变量 SITE_BASE_URL（其次是托管平台
+   自动注入的 URL / CF_PAGES_URL）。优先级：
+   SITE_BASE_URL > URL > CF_PAGES_URL > 这里的 baseUrl。
 
    stage: true = 测试模式。全站 noindex + robots.txt 禁止抓取，
    搜索引擎不会收录，所以换正式域名时不会有任何权重损失。
@@ -21,7 +22,7 @@
    都要读它，所以必须保持 .js。
    ============================================================ */
 window.SITE_CONFIG = {
-  baseUrl: 'https://seye-cosmetic-site.netlify.app',
+  baseUrl: 'https://seye-cosmetic-site.pages.dev',
   siteName: 'SEYE Biomedical',
   stage: true,
 
