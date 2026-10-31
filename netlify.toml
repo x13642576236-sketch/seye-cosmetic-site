@@ -1,0 +1,61 @@
+[build]
+  command = "node build-articles.js"
+  publish = "."
+
+# Netlify publishes the repo root (the site is a flat, hand-maintained static build),
+# so the authoring tool and build scripts would otherwise be reachable on the public
+# domain. They are already public on GitHub, but they have no business being served
+# from the site itself.
+[[redirects]]
+  from = "/admin.html"
+  to = "/"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/build-articles.js"
+  to = "/"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/article-builder.js"
+  to = "/"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/release.js"
+  to = "/"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/release.bat"
+  to = "/"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/publish.bat"
+  to = "/"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/tools/*"
+  to = "/"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/README.md"
+  to = "/"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/netlify.toml"
+  to = "/"
+  status = 404
+  force = true
