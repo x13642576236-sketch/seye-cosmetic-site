@@ -66,6 +66,151 @@ function parseFlowArray(s) {
 const indentOf = (l) => l.match(/^ */)[0].length;
 const isBlank = (l) => !l.trim() || /^\s*#/.test(l);
 
+/* 值的引号闭合状态。plain = 没引号，closed = 完整，open = 折到下一行去了。
+   Pages CMS 用的是 js-yaml，长字符串会被折行：
+     description: "A practical checklist for vetting factories:
+       licences, formula ownership, ..."                          ← 双引号跨行
+     excerpt: Most first-time brand owners pick a manufacturer on
+       price per unit and sample quality.                          ← 无引号跨行
+   两种都必须支持，否则描述、摘要、FAQ 答案会被悄悄截断在第一行 —— 表面上
+   构建成功，线上 meta description 却少了一半。 */
+function quoteState(s) {
+  const q = s[0];
+  if (q !== '"' && q !== "'") return 'plain';
+  let i = 1;
+  while (i < s.length) {
+    const ch = s[i];
+    if (q === '"') {
+      if (ch === '\\') { i += 2; continue; }
+      if (ch === '"') return 'closed';
+    } else if (ch === "'") {
+      if (s[i + 1] === "'") { i += 2; continue; }
+      return 'closed';
+    }
+    i++;
+  }
+  return 'open';
+}
+
+/* 收集缩进比 parentIndent 更深的所有后续行（空行也算，块标量需要它们） */
+function collectBlock(ctx, parentIndent) {
+  const out = [];
+  while (ctx.i < ctx.lines.length) {
+    const line = ctx.lines[ctx.i];
+    if (isBlank(line)) { out.push(line); ctx.i++; continue; }
+    if (indentOf(line) <= parentIndent) break;
+    out.push(line);
+    ctx.i++;
+  }
+  return out;
+}
+
+/* 折行标量：把第一行和续行拼回一条，再交给 parseScalar 解引号 */
+function scalarFromLines(first, contLines) {
+  const parts = [String(first).trim()];
+  for (const l of contLines) {
+    const t = l.trim();
+    if (t) parts.push(t);
+  }
+  const raw = parts.join(' ');
+  if ((raw[0] === '"' || raw[0] === "'") && quoteState(raw) === 'open') {
+    throw new Error('引号没有闭合，也没找到续行：' + raw.slice(0, 60));
+  }
+  return parseScalar(raw);
+}
+
+/* | 和 > 块标量 */
+function blockScalar(contLines, marker) {
+  const filled = contLines.filter((l) => l.trim());
+  const minInd = filled.length ? Math.min.apply(null, filled.map(indentOf)) : 0;
+  const block = contLines.map((l) => (l.trim() ? l.slice(minInd) : ''));
+  while (block.length && !block[block.length - 1].trim()) block.pop();
+  const folded = marker[0] === '>';
+  return folded
+    ? block.join(' ').replace(/[ \t]+/g, ' ').trim()
+    : block.join('\n');
+}
+
+/* 一个值：空 → 子块；|/> → 块标量；否则 → 标量（可能折行） */
+function readValue(ctx, rest, parentIndent) {
+  if (!rest) return parseBlock(collectBlock(ctx, parentIndent));
+  if (/^[|>][-+]?$/.test(rest)) {
+    return blockScalar(collectBlock(ctx, parentIndent), rest);
+  }
+  const cont = collectBlock(ctx, parentIndent);
+  return cont.length ? scalarFromLines(rest, cont) : parseScalar(rest);
+}
+
+/* 键值映射（缩进已归一，每行缩进应等于 baseIndent） */
+function parseMapping(ctx, baseIndent) {
+  const obj = {};
+  while (ctx.i < ctx.lines.length) {
+    const line = ctx.lines[ctx.i];
+    if (isBlank(line)) { ctx.i++; continue; }
+    const ind = indentOf(line);
+    if (ind < baseIndent) break;
+    if (ind > baseIndent) {
+      throw new Error('缩进对不上（期望 ' + baseIndent + '，实际 ' + ind + '）：' + line);
+    }
+    const m = line.slice(ind).match(/^([A-Za-z_][\w-]*):(?:\s+([\s\S]*))?$/);
+    if (!m) throw new Error('无法解析的 frontmatter 行：' + line);
+    const rest = (m[2] || '').trim();
+    ctx.i++;
+    obj[m[1]] = readValue(ctx, rest, ind);
+  }
+  return obj;
+}
+
+/* 序列：- 纯量 / - key: value（可跟同级续行） */
+function parseSequence(lines) {
+  const items = [];
+  const ctx = { lines, i: 0 };
+  while (ctx.i < lines.length) {
+    const line = lines[ctx.i];
+    if (isBlank(line)) { ctx.i++; continue; }
+    const ind = indentOf(line);
+    if (ind !== 0) throw new Error('序列项缩进异常：' + line);
+    /* "- " 的宽度要单独量，不能把后面的内容一起算进去 */
+    const dm = /^-([ \t]+|$)/.exec(line);
+    if (!dm) throw new Error('无法解析的序列项：' + line);
+    const dashWidth = dm[0].length;
+    const rest = line.slice(dashWidth).trim();
+    ctx.i++;
+
+    if (!rest) {
+      items.push(parseBlock(collectBlock(ctx, 0)));
+      continue;
+    }
+    /* 纯量项：- skincare OEM manufacturer（也可能折行） */
+    if (!/^[A-Za-z_][\w-]*:([ \t]|$)/.test(rest)) {
+      const cont = collectBlock(ctx, 0);
+      items.push(cont.length ? scalarFromLines(rest, cont) : parseScalar(rest));
+      continue;
+    }
+    /* 映射项：- q: ... 后面可能跟 a: ... */
+    const itemLines = [rest];
+    while (ctx.i < lines.length) {
+      const l = lines[ctx.i];
+      if (isBlank(l)) { ctx.i++; continue; }
+      if (indentOf(l) === 0) break;
+      itemLines.push(l.slice(Math.min(dashWidth, indentOf(l))));
+      ctx.i++;
+    }
+    items.push(parseBlock(itemLines));
+  }
+  return items;
+}
+
+/* 一组行 → 数组或对象（自动去掉公共缩进） */
+function parseBlock(rawLines) {
+  const lines = rawLines.filter((l) => !isBlank(l));
+  if (!lines.length) return '';
+  const base = Math.min.apply(null, lines.map(indentOf));
+  const dedented = lines.map((l) => l.slice(base));
+  if (/^-([ \t]|$)/.test(dedented[0])) return parseSequence(dedented);
+  return parseMapping({ lines: dedented, i: 0 }, 0);
+}
+
 /* ---------------- frontmatter ---------------- */
 
 function splitFrontmatter(text) {
@@ -82,91 +227,8 @@ function splitFrontmatter(text) {
 function parseFrontmatter(text) {
   const { fm, body } = splitFrontmatter(text);
   const lines = fm.split('\n');
-  const data = {};
-  let i = 0;
-
-  while (i < lines.length) {
-    const line = lines[i];
-    if (isBlank(line)) { i++; continue; }
-    const indent = indentOf(line);
-    if (indent !== 0) { i++; continue; }
-
-    const m = line.match(/^([A-Za-z_][\w-]*):\s*(.*)$/);
-    if (!m) throw new Error('无法解析的 frontmatter 行：' + line);
-    const key = m[1];
-    const rest = m[2];
-
-    /* key: | 或 key: >- 多行标量 */
-    if (/^[|>][-+]?$/.test(rest.trim())) {
-      const folded = rest.trim()[0] === '>';
-      const block = [];
-      i++;
-      while (i < lines.length && (isBlank(lines[i]) || indentOf(lines[i]) > 0)) {
-        block.push(lines[i].replace(/^ {1,4}/, ''));
-        i++;
-      }
-      while (block.length && !block[block.length - 1].trim()) block.pop();
-      data[key] = folded
-        ? block.join(' ').replace(/\s+/g, ' ').trim()
-        : block.join('\n');
-      continue;
-    }
-
-    if (rest.trim()) { data[key] = parseScalar(rest); i++; continue; }
-
-    /* 空值：往下看是列表还是映射 */
-    i++;
-    const child = [];
-    while (i < lines.length && (isBlank(lines[i]) || indentOf(lines[i]) > indent)) {
-      child.push(lines[i]);
-      i++;
-    }
-    data[key] = parseChildren(child);
-  }
-
+  const data = parseMapping({ lines, i: 0 }, 0);
   return { data, body };
-}
-
-/* 把一组子行解析成数组或对象 */
-function parseChildren(rawLines) {
-  const lines = rawLines.filter((l) => !isBlank(l));
-  if (!lines.length) return '';
-
-  const baseIndent = Math.min.apply(null, lines.map(indentOf));
-  const trimmed = lines.map((l) => l.slice(baseIndent));
-
-  if (/^-\s|^-$/.test(trimmed[0])) {
-    const items = [];
-    let cur = null;
-    for (const l of trimmed) {
-      if (/^-\s|^-$/.test(l)) {
-        const rest = l.slice(1).trim();
-        if (rest && /^[A-Za-z_][\w-]*:/.test(rest)) {
-          cur = {};
-          const mm = rest.match(/^([A-Za-z_][\w-]*):\s*(.*)$/);
-          cur[mm[1]] = mm[2].trim() ? parseScalar(mm[2]) : '';
-          items.push(cur);
-        } else if (rest) {
-          cur = null;
-          items.push(parseScalar(rest));
-        } else {
-          cur = {};
-          items.push(cur);
-        }
-      } else if (cur && /^[A-Za-z_][\w-]*:/.test(l.trim())) {
-        const mm = l.trim().match(/^([A-Za-z_][\w-]*):\s*(.*)$/);
-        cur[mm[1]] = mm[2].trim() ? parseScalar(mm[2]) : '';
-      }
-    }
-    return items;
-  }
-
-  const obj = {};
-  for (const l of trimmed) {
-    const mm = l.trim().match(/^([A-Za-z_][\w-]*):\s*(.*)$/);
-    if (mm) obj[mm[1]] = mm[2].trim() ? parseScalar(mm[2]) : '';
-  }
-  return obj;
 }
 
 /* ---------------- 读 ---------------- */
