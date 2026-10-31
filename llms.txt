@@ -14,5 +14,6 @@
 
 ## Articles
 
+- [Cosmetic Packaging: What Actually Sets Your MOQ, Cost and Lead Time](https://seye-cosmetic-site.pages.dev/insights/cosmetic-packaging-moq-cost-lead-time/): Why the packaging component, not the formula, usually sets your cosmetic MOQ — component tiers, decoration minimums, compatibility tests and lead time anatomy.
 - [How to Choose a Skincare OEM Manufacturer: What to Verify Before You Sign](https://seye-cosmetic-site.pages.dev/insights/how-to-choose-a-skincare-oem-manufacturer/): A practical checklist for vetting skincare OEM and ODM factories: licences, formula ownership, in-process QC, MOQ terms, packaging and export documentation.
 - [How to Read a Cosmetic Certificate of Analysis (and Spot a Fabricated One)](https://seye-cosmetic-site.pages.dev/insights/reading-a-cosmetic-certificate-of-analysis/): What a cosmetic CoA must contain, which results buyers misread — pH, viscosity, microbiological limits — and how to tell a genuine report from a template.
