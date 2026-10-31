@@ -8,12 +8,17 @@
    它做四件事：
      1) 丢弃机器人（隐藏的 bot-field 一旦有值就静默成功，不告诉对方）
      2) 必填校验 + 长度截断，避免有人刷超长字段
-     3) 转发给 FormSubmit，由它发邮件；收件人地址放在环境变量
-        ENQUIRY_TO 里，不进公开仓库（这个仓库是公开的）
+     3) 转发给 Web3Forms，由它发邮件；access key 放在环境变量
+        WEB3FORMS_KEY 里，不进公开仓库（这个仓库是公开的）
      4) 统一返回 JSON，前端只看 ok 字段
 
-   收件邮箱改成谁：在 Cloudflare 项目 Settings → Variables and Secrets
-   里改 ENQUIRY_TO，不用改代码、不用重新部署。
+   为什么不用 FormSubmit：它按来源 IP 限流，Cloudflare 的出口 IP 是共享的，
+   实测直接返回 "Rate limit exceeded"，从服务器端转发根本发不出去。
+   Web3Forms 用 key 鉴权，跟 IP 无关。
+
+   收件邮箱改成谁：Web3Forms 的 key 是绑邮箱的，换邮箱等于换 key ——
+   去 web3forms.com 用新邮箱再取一个，改掉 Cloudflare 环境变量即可，
+   不用动代码。
    ============================================================ */
 
 const REQUIRED = ['name', 'email', 'category', 'quantity', 'brief'];
@@ -64,37 +69,31 @@ export async function onRequestPost({ request, env }) {
     return json({ ok: false, error: 'Invalid email address.' }, 422);
   }
 
-  const to = (env && env.ENQUIRY_TO) || '';
-  if (!to) {
-    /* 没配收件人时不能假装成功 —— 那样线索就静默丢了 */
+  const accessKey = (env && env.WEB3FORMS_KEY) || '';
+  if (!accessKey) {
+    /* 没配 key 时不能假装成功 —— 那样线索就静默丢了 */
     return json({ ok: false, error: 'Enquiry endpoint is not configured.' }, 503);
   }
 
   const payload = {
+    access_key: accessKey,
+    subject: 'SEYE 询盘 · ' + data.category + ' · ' + data.name,
+    from_name: 'SEYE Website',
+    replyto: data.email,
     name: data.name,
     email: data.email,
     category: data.category,
     quantity: data.quantity,
-    brief: data.brief,
-    _replyto: data.email,
-    _subject: 'SEYE 网站询盘 · ' + data.category + ' · ' + data.name,
-    _template: 'table',
-    _captcha: 'false'
+    brief: data.brief
   };
-
-  /* FormSubmit 会校验来源站点：没有 Origin 时它当成"本地打开 HTML 文件"直接拒绝，
-     所以这里把本站的 origin 显式带上（服务端转发时浏览器头不会被继承）。 */
-  const siteOrigin = new URL(request.url).origin;
 
   let upstream;
   try {
-    upstream = await fetch('https://formsubmit.co/ajax/' + encodeURIComponent(to), {
+    upstream = await fetch('https://api.web3forms.com/submit', {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        accept: 'application/json',
-        origin: siteOrigin,
-        referer: siteOrigin + '/'
+        accept: 'application/json'
       },
       body: JSON.stringify(payload)
     });
@@ -102,11 +101,11 @@ export async function onRequestPost({ request, env }) {
     return json({ ok: false, error: 'Delivery service unreachable.' }, 502);
   }
 
-  /* 上游用字符串 "true"/"false"，不是布尔值；HTTP 200 也可能表示"待激活"或"被限流"，
+  /* Web3Forms 用布尔 success；HTTP 200 也可能是业务失败（key 失效、额度用尽），
      所以必须看 body，不能只看状态码。 */
   let reply = null;
   try { reply = await upstream.json(); } catch (e) { /* 非 JSON */ }
-  const accepted = reply && String(reply.success) === 'true';
+  const accepted = reply && reply.success === true;
 
   if (!upstream.ok || !accepted) {
     return json({
