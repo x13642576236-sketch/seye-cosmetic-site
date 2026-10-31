@@ -36,7 +36,7 @@ dependencies, no framework — Node built-in modules and vanilla JS only.
 Online authoring runs on [Pages CMS](https://app.pagescms.org), configured by `.pages.yml`.
 Sign in with GitHub, pick this repository, and the "文章（Insights）" collection gives you a form
 for the metadata, a rich-text body, and image uploads that land in `assets/uploads/`. Saving
-commits a markdown file; Netlify rebuilds.
+commits a markdown file; Cloudflare Pages rebuilds.
 
 `admin.html` still works for the home-page copy. Its article tab is read-only on purpose — it
 would write into the generated mirror, and the next build would silently discard it.
@@ -45,7 +45,7 @@ would write into the generated mirror, and the next build would silently discard
 
 ```
 index.html              hand-written home page (7 sections)
-404.html                not-found page, served by Netlify with a 404 status
+404.html                not-found page, served with a 404 status by the host
 admin.html              local tool: home-page copy editor (articles moved online)
 site.config.js          window.SITE_CONFIG — baseUrl + stage flag, single source
 content/articles/*.md   articles: YAML frontmatter + markdown body (source of truth)
@@ -56,7 +56,8 @@ articles-md.js          frontmatter parser + markdown writer (no dependencies)
 article-builder.js      generator core
 build-articles.js       Node build script
 publish.bat / .js       build + commit + push
-netlify.toml            build command, publish dir, blocks internal files
+_headers                Cloudflare Pages: caching + security response headers
+netlify.toml            legacy: same rules for Netlify, ignored by Cloudflare
 .pages.yml              Pages CMS schema for online authoring
 assets/                 images, self-hosted woff2 fonts, insights.css
 assets/uploads/         images uploaded from Pages CMS land here
@@ -75,9 +76,18 @@ Regenerates the article pages, `insights/index.html`, `sitemap.xml`, `robots.txt
 `feed.xml`, and injects the article list + robots directive + canonical/OG/JSON-LD block into
 `index.html`.
 
-The base URL resolution order is `SITE_BASE_URL` → `URL` (injected by Netlify) → `baseUrl` in
-`site.config.js`. A build with an invalid absolute URL fails loudly instead of emitting a broken
-canonical.
+The base URL resolution order is `SITE_BASE_URL` → `URL` (Netlify) → `CF_PAGES_URL` (Cloudflare,
+with the per-deploy hash stripped off) → `baseUrl` in `site.config.js`. A build with an invalid
+absolute URL fails loudly instead of emitting a broken canonical.
+
+There are two build paths, and they must not be confused:/n/n```bash
+node build-articles.js        # regenerate pages in place (local preview, publish.js)
+node release.js --no-zip      # the above, then rebuild dist/ from a whitelist → what CI deploys
+```
+
+Cloudflare Pages runs `node release.js --no-zip` and publishes `dist`. Publishing only the
+whitelisted output is what keeps `admin.html`, `content/` and the build scripts off the public
+site — there are no block rules to maintain.
 
 Requires Node 18+.
 
@@ -96,8 +106,8 @@ on a plain `cmd` PATH, so the script probes `PATH` first and then falls back to 
 install locations. It also stops if `index.html` has been polluted by a visual editor
 (`data-page-node-id` attributes) or if the build fails, so a broken build never reaches GitHub.
 
-Netlify rebuilds from GitHub on every push to `main`. `release.bat` (build + zip) is legacy from
-the manual-drag era and is no longer needed.
+The host rebuilds from GitHub on every push to `main` — nothing else to do after `publish.js`.
+`release.bat` (build + zip) is legacy from the manual-drag era and is no longer needed.
 
 ## Status
 
@@ -106,11 +116,11 @@ carries `noindex,nofollow`. Stage mode has to be switched off in all three layer
 robots, home page, article/list pages — otherwise you end up with the worse state of "home page
 not indexed but articles indexed".
 
-Canonical host in `SITE_CONFIG.baseUrl` is `https://seye-cosmetic-site.netlify.app` — the address
+Canonical host in `SITE_CONFIG.baseUrl` is `https://seye-cosmetic-site.pages.dev` — the address
 that actually resolves today. Pointing canonical at a domain that does not resolve yet tells
 Google the real page lives elsewhere and throws the ranking away; the real domain gets switched in
 when its DNS is live.
 
 Going live for real means two changes: set `baseUrl` to the production domain (or set the
-`SITE_BASE_URL` environment variable in Netlify), and set `stage: false`. Then rebuild — every
+`SITE_BASE_URL` environment variable in the host's build settings), and set `stage: false`. Then rebuild — every
 absolute URL on the site follows automatically.
